@@ -1,0 +1,149 @@
+
+sim_dict_spring:
+  ctrl:
+    color: 'k'
+    dir: '/work2/noaa/wrfruc/murdzek/RRFS_OSSE/metplus_verif_grid_NR/rrfs-workflow_orion/spring/{subtyp}/output/{typ}'
+    ctrl: True
+  uas_300km:
+    color: 'forestgreen'
+    dir: '/work2/noaa/wrfruc/murdzek/RRFS_OSSE/metplus_verif_grid_NR/rrfs-workflow_orion/spring_uas_300km/{subtyp}/output/{typ}'
+    ctrl: False
+  uas_150km:
+    color: 'b'
+    dir: '/work2/noaa/wrfruc/murdzek/RRFS_OSSE/metplus_verif_grid_NR/rrfs-workflow_orion/spring_uas_150km/{subtyp}/output/{typ}'
+    ctrl: False
+  uas_100km:
+    color: 'gray'
+    dir: '/work2/noaa/wrfruc/murdzek/RRFS_OSSE/metplus_verif_grid_NR/rrfs-workflow_orion/spring_uas_100km/{subtyp}/output/{typ}'
+    ctrl: False
+  uas_75km:
+    color: 'orange'
+    dir: '/work2/noaa/wrfruc/murdzek/RRFS_OSSE/metplus_verif_grid_NR/rrfs-workflow_orion/spring_uas_75km/{subtyp}/output/{typ}'
+    ctrl: False
+  uas_35km:
+    color: 'r'
+    dir: '/work2/noaa/wrfruc/murdzek/RRFS_OSSE/metplus_verif_grid_NR/rrfs-workflow_orion/spring_uas_35km/{subtyp}/output/{typ}'
+    ctrl: False
+
+sim_dict_winter:
+  ctrl:
+    color: 'k'
+    dir: '/work2/noaa/wrfruc/murdzek/RRFS_OSSE/metplus_verif_grid_NR/rrfs-workflow_orion/winter/{subtyp}/output/{typ}'
+    ctrl: True
+  uas_150km:
+    color: 'b'
+    dir: '/work2/noaa/wrfruc/murdzek/RRFS_OSSE/metplus_verif_grid_NR/rrfs-workflow_orion/winter_uas_150km/{subtyp}/output/{typ}'
+    ctrl: False
+  uas_100km:
+    color: 'gray'
+    dir: '/work2/noaa/wrfruc/murdzek/RRFS_OSSE/metplus_verif_grid_NR/rrfs-workflow_orion/winter_uas_100km/{subtyp}/output/{typ}'
+    ctrl: False
+  uas_75km:
+    color: 'orange'
+    dir: '/work2/noaa/wrfruc/murdzek/RRFS_OSSE/metplus_verif_grid_NR/rrfs-workflow_orion/winter_uas_75km/{subtyp}/output/{typ}'
+    ctrl: False
+  uas_35km:
+    color: 'r'
+    dir: '/work2/noaa/wrfruc/murdzek/RRFS_OSSE/metplus_verif_grid_NR/rrfs-workflow_orion/winter_uas_35km/{subtyp}/output/{typ}'
+    ctrl: False
+
+severe_wx_spring:
+  severe_wx_env:
+    MLCAPE: &mlcape
+      plot_stat:
+        - 'RMSE'
+      kwargs: &mlcape_kwargs
+        file_prefix: 'grid_stat_FV3_vs_NR'
+        line_type: 'sl1l2'
+        diffs: True
+        include_ctrl: True
+        ci: True
+        ci_lvl: 0.95
+        ci_opt: 't_dist'
+        ci_kw:
+          acct_lag_corr: True
+        diff_kw:
+          var:
+            - 'RMSE'
+          match:
+            - 'FCST_LEAD'
+            - 'FCST_VAR'
+            - 'FCST_VALID_BEG'
+            - 'FCST_LEV'
+            - 'FCST_UNITS'
+            - 'VX_MASK'
+            - 'OBTYPE'
+        include_zero: True
+        mean_legend: False
+        toggle_pts: False
+        plot_param: &mlcape_param
+          OBTYPE: 'NR'
+          VX_MASK: 'data_mask'
+          FCST_LEV: 'R1060'
+          FCST_VAR: 'CAPE'
+    MLCIN:
+      <<: *mlcape
+      kwargs:
+        <<: *mlcape_kwargs
+        plot_param:
+          <<: *mlcape_param
+          FCST_LEV: 'R1061'
+          FCST_VAR: 'CIN'
+    SRH03:
+      <<: *mlcape
+      kwargs:
+        <<: *mlcape_kwargs
+        plot_param:
+          <<: *mlcape_param
+          FCST_LEV: 'R922'
+          FCST_VAR: 'HLCY'
+
+other_2d_dieoff:
+  additional_2D:
+    HPBL:
+      plot_stat:
+        - 'RMSE'
+      kwargs: &hpbl_kwargs
+        file_prefix: 'grid_stat_FV3_UGRD_vs_NR_UGRD'
+        line_type: 'sl1l2'
+        diffs: True
+        include_ctrl: True
+        ci: True
+        ci_lvl: 0.95
+        ci_opt: 't_dist'
+        ci_kw:
+          acct_lag_corr: True
+        diff_kw: &hpbl_diff_kwargs
+          var:
+            - 'RMSE'
+          match:
+            - 'FCST_LEAD'
+            - 'FCST_VAR'
+            - 'FCST_VALID_BEG'
+            - 'FCST_LEV'
+            - 'FCST_UNITS'
+            - 'VX_MASK'
+            - 'OBTYPE'
+        include_zero: True
+        mean_legend: False
+        toggle_pts: False
+        plot_param: &hpbl_param
+          OBTYPE: 'NR'
+          VX_MASK: 'shape_mask'
+          FCST_LEV: 'Z0'
+          FCST_VAR: 'HPBL'
+    UGRD_VGRD:
+      plot_stat:
+        - 'VECT_RMSE'
+      kwargs:
+        <<: *hpbl_kwargs
+        file_prefix: 'grid_stat_FV3_UGRD_vs_NR_UGRD'
+        line_type: 'vl1l2'
+        diff_kw:
+          <<: *hpbl_diff_kwargs
+          var:
+            - 'VECT_RMSE'
+        plot_param:
+          <<: *hpbl_param
+          FCST_LEV: 'Z80'
+          FCST_VAR: 'UGRD_VGRD'
