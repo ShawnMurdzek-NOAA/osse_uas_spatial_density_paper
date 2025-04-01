@@ -10,19 +10,12 @@ shawn.s.murdzek@noaa.gov
 # Import Modules
 #---------------------------------------------------------------------------------------------------
 
-import xarray as xr
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import datetime as dt
 import cartopy.crs as ccrs
 import cartopy.feature as cfeature
-import metpy.calc as mc
-from metpy.units import units
-import metpy.constants as const
-import scipy.interpolate as si
-import datetime as dt
-import sys
 
 import pyDA_utils.gsi_fcts as gsi
 
@@ -31,137 +24,82 @@ import pyDA_utils.gsi_fcts as gsi
 # Input Parameters
 #---------------------------------------------------------------------------------------------------
 
+# GSI output diag file
 # O-Bs are found in the "ges" files and O-As are found in the "anl" files
-# Can 1 or 2 datasets. Key is the name of the dataset
-tmpl = '/mnt/lfs4/BMC/wrfruc/murdzek/tmp_diags/diag_conv_uv_ges.%s.nc4'
-dates = [dt.datetime(2024, 3, 25, 0)]
-
-fnames = {}
-fnames['real'] = [tmpl % d.strftime('%Y%m%d%H') for d in dates]
-
-# Variable to plot (only necessary for the uv diag files)
-diag_var = 'u'
+fname = '/work2/noaa/wrfruc/murdzek/RRFS_OSSE/real_data_app_orion/winter/rrfs.20220201/NCO_dirs/ptmp/prod/rrfs.20220201/12/diag_conv_t_ges.2022020112.nc4'
 
 # Subset of each observation type to plot ('all' - all obs, 'assim' - only obs that are assimilated)
 data_subset = 'all'
 
-# Filter observations based on another field (e.g., pressure, height)
-use_filter = False
-filter_field = 'Height_AGL'
-filter_min = 400
-filter_max = 600
+# RRFS field (needed to extract surface terrain height so MSL can be converted to AGL)
+rrfs_fname = '/work2/noaa/wrfruc/murdzek/RRFS_OSSE/real_data_app_orion/winter/rrfs.20220201/NCO_dirs/ptmp/prod/rrfs.20220201/12/rrfs.t12z.natlev.f000.conus_3km.grib2'
 
-# Option to convert 'Height' from MSL to AGL. This requires a RRFS input file to extract the surface
-# terrain height. Resulting field is 'Height_AGL'
-convert_msl_to_agl = True
-rrfs_fname = '/mnt/lfs4/BMC/wrfruc/murdzek/tmp_diags/rrfs.t12z.natlev.f000.conus_3km.grib2'
-
-# Output directory and string to add to output file names
-out_dir = './'
-out_str = ''
-
-# Use passed command-line arguments
-if len(sys.argv) > 1:
-    dates = [dt.datetime.strptime(sys.argv[1], '%Y%m%d%H')]
-    fnames['real'] = [tmpl % d.strftime('%Y%m%d%H') for d in dates]
-    out_str = sys.argv[2]
-    if out_str == 'all':
-        use_filter = False
-    elif sys.argv[2] == 'upper_trop':
-        use_filter = True
-        filter_min = 5000
-        filter_max = 10000
-    elif sys.argv[2] == 'near_sfc':
-        use_filter = True
-        filter_min = -100
-        filter_max = 50
-    elif sys.argv[2] == 'pbl':
-        use_filter = True
-        filter_min = 500
-        filter_max = 1000
+# Output file name
+out_fname = '../figs/TOBdist.pdf'
 
 
 #---------------------------------------------------------------------------------------------------
-# Compute Statistics
+# Main Program
 #---------------------------------------------------------------------------------------------------
-
-data_names = list(fnames.keys())
-if fnames[data_names[0]][0].split('_')[-2] == 'uv':
-    vname = '%s_Obs_Minus_Forecast_adjusted' % diag_var
-else:
-    vname = 'Obs_Minus_Forecast_adjusted'
-    diag_var = fnames[data_names[0]][0].split('_')[-2]
 
 # Extract data
-diag_df = {}
-for key in data_names:
-    print('Dataset = %s' % key)
-    diag_df[key] = gsi.read_diag(fnames[key])
-    if data_subset == 'assim':
-        diag_df[key] = diag_df[key].loc[diag_df[key]['Analysis_Use_Flag'] == 1, :]
-diag_dates = np.unique(diag_df[data_names[0]]['date_time'])
+diag_df = gsi.read_diag([fname])
+if data_subset == 'assim':
+    diag_df = diag_df.loc[diag_df['Analysis_Use_Flag'] == 1, :]
 
-# Convert height from MSL to AGL if desired
-if convert_msl_to_agl:
-    diag_df[key] = gsi.compute_height_agl_diag(diag_df[key], rrfs_fname)
+# Convert height from MSL to AGL
+diag_df = gsi.compute_height_agl_diag(diag_df, rrfs_fname)
 
-# Filter observations
-if use_filter:
-    for key in data_names:
-        diag_df[key] = diag_df[key].loc[(diag_df[key][filter_field] >= filter_min) &
-                                        (diag_df[key][filter_field] <= filter_max), :]
-        diag_df[key].reset_index(inplace=True, drop=True)
+# Create plot
+use_filter = [False, False, True]
+filter_min = [0, 0, 15]
+filter_max = [0, 0, 2000]
+title = ['all', 'near-surface', '15$-$2000 m AGL']
+sid_ignore = [[],
+              [120, 126, 130, 133, 134, 135],
+              [180, 181, 183, 187, 188]]
+fig = plt.figure(figsize=(5.5, 9))
+for i in range(3):
 
-# Create list of ob types
-ob_typ = np.unique(diag_df[data_names[0]]['Observation_Type'].values)
-if len(data_names) > 1:
-    for key in data_names[1:]:
-        ob_typ = np.unique(np.concatenate([ob_typ, diag_df[key]['Observation_Type'].values]))
-
-# Add all observation types
-ob_typ = np.concatenate([ob_typ, [0]])
-
-# Plot data
-for typ in ob_typ:
-    fig = plt.figure(figsize=(10, 8))
-
-    for i, key in enumerate(data_names):
-        ax = fig.add_subplot(i+1, 1, len(data_names), projection=ccrs.LambertConformal()) 
-        if typ > 0:
-            lat = diag_df[key].loc[diag_df[key]['Observation_Type'] == typ, 'Latitude'].values
-            lon = diag_df[key].loc[diag_df[key]['Observation_Type'] == typ, 'Longitude'].values
-        else:
-            lat = diag_df[key].loc[:, 'Latitude'].values
-            lon = diag_df[key].loc[:, 'Longitude'].values
-        ax.plot(lon, lat, 'b.', transform=ccrs.PlateCarree())
-        ax.coastlines('50m', edgecolor='gray', linewidth=0.75)
-        borders = cfeature.NaturalEarthFeature(category='cultural',
-                                               scale='50m',
-                                               facecolor='none',
-                                               name='admin_1_states_provinces')
-        ax.add_feature(borders, edgecolor='gray', linewidth=0.5)
-        lakes = cfeature.NaturalEarthFeature(category='physical',
-                                             scale='50m',
-                                             facecolor='none',
-                                             name='lakes')
-        ax.add_feature(lakes, edgecolor='gray', linewidth=0.5)
-        ax.set_extent([237, 291, 21.5, 50])
-
-    # Add additional metrics
-    if typ > 0:
-        ttl = ('ob type = %d\nstart = %d, end = %d, var = %s, subset = %s' % 
-               (typ, np.amin(diag_dates), np.amax(diag_dates), diag_var, data_subset)) 
+    if use_filter[i]:
+        red_df = diag_df.loc[(diag_df['Height_AGL'] >= filter_min[i]) &
+                             (diag_df['Height_AGL'] <= filter_max[i]), :]
     else:
-        ttl = ('ob type = all\nstart = %d, end = %d, var = %s, subset = %s' % 
-               (np.amin(diag_dates), np.amax(diag_dates), diag_var, data_subset)) 
-    if use_filter:
-        ttl = ttl + f'\n{filter_min} $\leq$ {filter_field} $\leq$ {filter_max}'
+        red_df = diag_df
 
-    plt.suptitle(ttl, size=18) 
+    for sid in sid_ignore[i]:
+        red_df = red_df.loc[red_df['Observation_Type'] != sid]
 
-    plt.savefig('%s/loc_ob%s_%s_%s_%s_%d_%d.pdf' % 
-                (out_dir, typ, out_str, diag_var, data_subset, np.amin(diag_dates), np.amax(diag_dates)))
-    plt.close() 
+    print('\nOb types when using the following considerations:')
+    print(f'Filter = {use_filter[i]}, min = {filter_min[i]}, max = {filter_max[i]}')
+    for typ in red_df['Observation_Type'].unique():
+        print(f"{typ} (n = {len(red_df.loc[red_df['Observation_Type'] == typ])})")
+
+    ax = fig.add_subplot(3, 1, i+1, projection=ccrs.LambertConformal())
+    ax.plot(red_df['Longitude'] , red_df['Latitude'], 'b.', markersize=2, transform=ccrs.PlateCarree())
+
+    ax.coastlines('50m', edgecolor='gray', linewidth=0.6)
+    borders = cfeature.NaturalEarthFeature(category='cultural',
+                                           scale='50m',
+                                           facecolor='none',
+                                           name='admin_1_states_provinces')
+    ax.add_feature(borders, edgecolor='gray', linewidth=0.4)
+    lakes = cfeature.NaturalEarthFeature(category='physical',
+                                         scale='50m',
+                                         facecolor='none',
+                                         name='lakes')
+    ax.add_feature(lakes, edgecolor='gray', linewidth=0.4)
+    ax.set_extent([237, 291, 21.5, 50])
+
+    ax.set_title(f"{title[i]} (n = {len(red_df)})", size=16)
+
+date_dt = dt.datetime.strptime(str(diag_df['date_time'].values[0]), '%Y%m%d%H')
+date_str = date_dt.strftime('%Y%m%d %H:%M UTC')
+plt.suptitle(f"Temperature Observations\n({date_str})", size=20)
+plt.subplots_adjust(left=0.02, bottom=0.02, right=0.98, top=0.87)
+
+plt.savefig(out_fname)
+plt.close()
 
 
 """
