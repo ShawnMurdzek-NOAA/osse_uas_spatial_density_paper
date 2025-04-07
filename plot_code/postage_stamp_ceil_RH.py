@@ -27,50 +27,102 @@ import pyDA_utils.upp_postprocess as uppp
 
 # Simulation directories
 NR_dir = '/work2/noaa/wrfruc/murdzek/nature_run_winter/UPP'
-ctrl_dir = '/work2/noaa/wrfruc/murdzek/RRFS_OSSE/syn_data_rrfs-workflow_orion/winter/NCO_dirs/ptmp/prod/rrfs.20220202/00'
-uas150_dir = '/work2/noaa/wrfruc/murdzek/RRFS_OSSE/syn_data_rrfs-workflow_orion/winter_uas_150km/NCO_dirs/ptmp/prod/rrfs.20220202/00'
-uas35_dir = '/work2/noaa/wrfruc/murdzek/RRFS_OSSE/syn_data_rrfs-workflow_orion/winter_uas_35km/NCO_dirs/ptmp/prod/rrfs.20220202/00'
-sims = {'NR': [f"{NR_dir}/20220202/wrfprs_202202020000_er.grib2",
-               f"{NR_dir}/20220202/wrfprs_202202020200_er.grib2",
-               f"{NR_dir}/20220202/wrfprs_202202020400_er.grib2"],
-        'no UAS': [f"{ctrl_dir}/rrfs.t00z.prslev.f000.conus_3km.grib2",
-                   f"{ctrl_dir}/rrfs.t00z.prslev.f002.conus_3km.grib2",
-                   f"{ctrl_dir}/rrfs.t00z.prslev.f004.conus_3km.grib2"],
-        '150-km UAS': [f"{uas150_dir}/rrfs.t00z.prslev.f000.conus_3km.grib2",
-                       f"{uas150_dir}/rrfs.t00z.prslev.f002.conus_3km.grib2",
-                       f"{uas150_dir}/rrfs.t00z.prslev.f004.conus_3km.grib2"],
-        '35-km UAS': [f"{uas35_dir}/rrfs.t00z.prslev.f000.conus_3km.grib2",
-                      f"{uas35_dir}/rrfs.t00z.prslev.f002.conus_3km.grib2",
-                      f"{uas35_dir}/rrfs.t00z.prslev.f004.conus_3km.grib2"]}
+ctrl_dir = '/work2/noaa/wrfruc/murdzek/RRFS_OSSE/syn_data_rrfs-workflow_orion/winter/NCO_dirs/ptmp/prod/rrfs.20220201/22'
+uas150_dir = '/work2/noaa/wrfruc/murdzek/RRFS_OSSE/syn_data_rrfs-workflow_orion/winter_uas_150km/NCO_dirs/ptmp/prod/rrfs.20220201/22'
+uas35_dir = '/work2/noaa/wrfruc/murdzek/RRFS_OSSE/syn_data_rrfs-workflow_orion/winter_uas_35km/NCO_dirs/ptmp/prod/rrfs.20220201/22'
+sims = {'NR': [f"{NR_dir}/20220201/wrfprs_202202012200_er.grib2",
+               f"{NR_dir}/20220202/wrfprs_202202020000_er.grib2",
+               f"{NR_dir}/20220202/wrfprs_202202020200_er.grib2"],
+        'no UAS': [f"{ctrl_dir}/rrfs.t22z.prslev.f000.conus_3km.grib2",
+                   f"{ctrl_dir}/rrfs.t22z.prslev.f002.conus_3km.grib2",
+                   f"{ctrl_dir}/rrfs.t22z.prslev.f004.conus_3km.grib2"],
+        '150-km UAS': [f"{uas150_dir}/rrfs.t22z.prslev.f000.conus_3km.grib2",
+                       f"{uas150_dir}/rrfs.t22z.prslev.f002.conus_3km.grib2",
+                       f"{uas150_dir}/rrfs.t22z.prslev.f004.conus_3km.grib2"],
+        '35-km UAS': [f"{uas35_dir}/rrfs.t22z.prslev.f000.conus_3km.grib2",
+                      f"{uas35_dir}/rrfs.t22z.prslev.f002.conus_3km.grib2",
+                      f"{uas35_dir}/rrfs.t22z.prslev.f004.conus_3km.grib2"]}
 
 # General parameters
 figsize = (8, 8.5)
 lon = [-87, -80]
 lat = [32, 37]
-NR_col_titles = ['0000 UTC', '0200 UTC', '0400 UTC']
+NR_col_titles = ['2200 UTC', '0000 UTC', '0200 UTC']
 fcst_col_titles = ['f00h', 'f02h', 'f04h']
 ceil_max = 4000
 ceil_field = 'CEIL_EXP2'
 
 # Figure-specific parameters
-fig_param = {'ceil':{'fname':'../figs/CeilFcst.png',
-                     'field':ceil_field,
-                     'prs': np.nan,
-                     'diff': False,
-                     'cbar_label': 'cloud ceiling (m AGL)',
-                     'cntf_kw':{'cmap':art_cm.HomeyerRainbow,
-                                'levels':np.arange(0, ceil_max+1, 200)}},
-             'RH':{'fname':'../figs/RH{P_mb}Fcst.png',
-                   'field':'RH_P0_L100_GLC0',
-                   'prs': 92500,
-                   'diff': True,
-                   'cbar_label': '{P_mb}-hPa RH (%)',
-                   'cntf_kw':{'cmap':'plasma',
-                              'levels':np.arange(0, 101, 4)},
-                   'cntf_diff_kw':{'cmap':'bwr',
-                                   'levels':np.arange(-30, 31, 4),
-                                   'extend':'both'}}}
-
+# Atlanta sits at ~320 m MSL. Ceilings are a few 100 to ~1200 m AGL. So focus on P levels below 850 hPa
+fig_param = {'ceil22':{'fname':'../figs/Ceil22Fcst.pdf',
+                       'field':ceil_field,
+                       'prs': np.nan,
+                       'diff': False,
+                       'cbar_label': 'cloud ceiling (m AGL)',
+                       'cntf_kw':{'cmap':art_cm.HomeyerRainbow,
+                                  'levels':np.arange(0, ceil_max+1, 200)}},
+             'RH22P900':{'fname':'../figs/RH22P{P_mb}Fcst.pdf',
+                         'field':'RH_P0_L100_GLC0',
+                         'prs': 90000,
+                         'diff': True,
+                         'cbar_label': '{P_mb}-hPa RH (%)',
+                         'cntf_kw':{'cmap':'plasma',
+                                    'levels':np.arange(0, 101, 4)},
+                         'cntf_diff_kw':{'cmap':'bwr_r',
+                                         'levels':np.arange(-30, 31, 4),
+                                         'extend':'both'}}}
+'''
+             'RH22P950':{'fname':'../figs/RH22P{P_mb}Fcst.png',
+                         'field':'RH_P0_L100_GLC0',
+                         'prs': 95000,
+                         'diff': True,
+                         'cbar_label': '{P_mb}-hPa RH (%)',
+                         'cntf_kw':{'cmap':'plasma',
+                                    'levels':np.arange(0, 101, 4)},
+                         'cntf_diff_kw':{'cmap':'bwr_r',
+                                         'levels':np.arange(-30, 31, 4),
+                                         'extend':'both'}},
+             'RH22P925':{'fname':'../figs/RH22P{P_mb}Fcst.png',
+                         'field':'RH_P0_L100_GLC0',
+                         'prs': 92500,
+                         'diff': True,
+                         'cbar_label': '{P_mb}-hPa RH (%)',
+                         'cntf_kw':{'cmap':'plasma',
+                                    'levels':np.arange(0, 101, 4)},
+                         'cntf_diff_kw':{'cmap':'bwr_r',
+                                         'levels':np.arange(-30, 31, 4),
+                                         'extend':'both'}},
+             'RH22P875':{'fname':'../figs/RH22P{P_mb}Fcst.png',
+                         'field':'RH_P0_L100_GLC0',
+                         'prs': 87500,
+                         'diff': True,
+                         'cbar_label': '{P_mb}-hPa RH (%)',
+                         'cntf_kw':{'cmap':'plasma',
+                                    'levels':np.arange(0, 101, 4)},
+                         'cntf_diff_kw':{'cmap':'bwr_r',
+                                         'levels':np.arange(-30, 31, 4),
+                                         'extend':'both'}},
+             'RH22P850':{'fname':'../figs/RH22P{P_mb}Fcst.png',
+                         'field':'RH_P0_L100_GLC0',
+                         'prs': 85000,
+                         'diff': True,
+                         'cbar_label': '{P_mb}-hPa RH (%)',
+                         'cntf_kw':{'cmap':'plasma',
+                                    'levels':np.arange(0, 101, 4)},
+                         'cntf_diff_kw':{'cmap':'bwr_r',
+                                         'levels':np.arange(-30, 31, 4),
+                                         'extend':'both'}},
+             'RH22P975':{'fname':'../figs/RH22P{P_mb}Fcst.png',
+                         'field':'RH_P0_L100_GLC0',
+                         'prs': 97500,
+                         'diff': True,
+                         'cbar_label': '{P_mb}-hPa RH (%)',
+                         'cntf_kw':{'cmap':'plasma',
+                                    'levels':np.arange(0, 101, 4)},
+                         'cntf_diff_kw':{'cmap':'bwr_r',
+                                         'levels':np.arange(-30, 31, 4),
+                                         'extend':'both'}}}
+'''
 
 #---------------------------------------------------------------------------------------------------
 # Main Program
@@ -168,7 +220,7 @@ for plot_name in fig_param.keys():
 
         cb_diff_ax = fig.add_axes([0.87, 0.02, 0.03, 0.68])
         cbar_diff = plt.colorbar(cax_diff, cax=cb_diff_ax, orientation='vertical', aspect=35, pad=0.1)
-        cbar_diff.set_label(f"difference in {cbar_label}", size=14)
+        cbar_diff.set_label(f"difference (RRFS $-$ NR) in {cbar_label}", size=14)
         cbar_diff.ax.tick_params(labelsize=11)
 
         cb_ax = fig.add_axes([0.87, 0.72, 0.03, 0.25])

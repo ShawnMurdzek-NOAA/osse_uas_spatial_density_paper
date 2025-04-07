@@ -47,6 +47,34 @@ sim_dict_winter:
     dir: '/work2/noaa/wrfruc/murdzek/RRFS_OSSE/metplus_verif_grid_NR/rrfs-workflow_orion/winter_uas_35km/{subtyp}/output/{typ}'
     ctrl: False
 
+rmse_vs_uas:
+  TMP: &tmp_rmse_uas
+    name: 'temperature'
+    plot_stat: 'RMSE'
+    file_prefix: 'grid_stat_FV3_TMP_vs_NR_TMP'
+    line_type: 'sl1l2'
+    fcst_leads:
+      - 0
+      - 3
+      - 6
+    subset:
+      FCST_VAR: 'TMP'
+      not_VX_MASK: 'full'
+  SPFH:
+    <<: *tmp_rmse_uas
+    name: 'specific humidity'
+    subset:
+      FCST_VAR: 'SPFH'
+      not_VX_MASK: 'full'
+  UGRD_VGRD:
+    <<: *tmp_rmse_uas
+    name: 'winds'
+    plot_stat: 'VECT_RMSE'
+    line_type: 'vl1l2'
+    subset:
+      FCST_VAR: 'UGRD_VGRD'
+      not_VX_MASK: 'full'
+
 severe_wx_spring:
   severe_wx_env:
     MLCAPE: &mlcape
