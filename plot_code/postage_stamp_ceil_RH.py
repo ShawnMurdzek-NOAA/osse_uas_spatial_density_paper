@@ -54,14 +54,14 @@ ceil_field = 'CEIL_EXP2'
 
 # Figure-specific parameters
 # Atlanta sits at ~320 m MSL. Ceilings are a few 100 to ~1200 m AGL. So focus on P levels below 850 hPa
-fig_param = {'ceil22':{'fname':'../figs/Ceil22Fcst.pdf',
+fig_param = {'ceil22':{'fname':'../figs/Ceil22Fcst.png',
                        'field':ceil_field,
                        'prs': np.nan,
                        'diff': False,
                        'cbar_label': 'cloud ceiling (m AGL)',
                        'cntf_kw':{'cmap':art_cm.HomeyerRainbow,
                                   'levels':np.arange(0, ceil_max+1, 200)}},
-             'RH22P900':{'fname':'../figs/RH22P{P_mb}Fcst.pdf',
+             'RH22P900':{'fname':'../figs/RH22P{P_mb}Fcst.png',
                          'field':'RH_P0_L100_GLC0',
                          'prs': 90000,
                          'diff': True,
@@ -236,7 +236,7 @@ for plot_name in fig_param.keys():
         cbar.ax.tick_params(labelsize=11)
 
     plt.subplots_adjust(left=0.02, bottom=0.02, right=0.85, top=0.95, hspace=0.3, wspace=0.1)
-    plt.savefig(out_fname)
+    plt.savefig(out_fname, dpi=700)
     plt.close()
 
 print(f'\nElapsed time = {(dt.datetime.now() - start).total_seconds()} s')

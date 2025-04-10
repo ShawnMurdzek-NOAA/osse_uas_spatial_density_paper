@@ -60,7 +60,7 @@ plot_dict = param['other_2d_dieoff']['additional_2D']
 # Make plot
 fig, axes = plt.subplots(nrows=2, ncols=2, figsize=(8, 7), sharex=True, sharey='row')
 plt.subplots_adjust(left=0.12, bottom=0.2, right=0.97, top=0.9, hspace=0.1, wspace=0.1)
-letters = ['a', 'b', 'c', 'd']
+letters = ['a', 'c', 'b', 'd']
 for i, (sim_dict, ttl, valid_times) in enumerate(zip([sim_dict_winter, sim_dict_spring], 
                                                      ['winter', 'spring'],
                                                      [valid_times_winter, valid_times_spring])):

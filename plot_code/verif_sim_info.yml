@@ -176,3 +176,65 @@ other_2d_dieoff:
           <<: *hpbl_param
           FCST_LEV: 'Z80'
           FCST_VAR: 'UGRD_VGRD'
+
+lower_atm:
+  TMP:
+    plot_stat:
+      - 'RMSE'
+      - 'BIAS_DIFF'
+    kwargs: &tmp_ua_kwargs
+      file_prefix: 'grid_stat_FV3_TMP_vs_NR_TMP'
+      line_type: 'sl1l2'
+      diffs: True
+      include_ctrl: True
+      ci: True
+      ci_lvl: 0.95
+      ci_opt: 't_dist'
+      ci_kw:
+        acct_lag_corr: True
+      diff_kw: &tmp_ua_diff_kwargs
+        var:
+          - 'RMSE'
+          - 'TOTAL'
+          - 'BIAS_DIFF'
+        match:
+          - 'FCST_LEAD'
+          - 'FCST_VAR'
+          - 'FCST_VALID_BEG'
+          - 'FCST_LEV'
+          - 'FCST_UNITS'
+          - 'VX_MASK'
+          - 'OBTYPE'
+      include_zero: True
+      plot_param: &tmp_ua_param
+        not_VX_MASK: 'FULL'
+        OBTYPE: 'NR'
+        FCST_VAR: 'TMP'
+  RH:
+    plot_stat:
+      - 'RMSE'
+      - 'BIAS_DIFF'
+    kwargs: 
+      <<: *tmp_ua_kwargs
+      file_prefix: 'grid_stat_FV3_RH_vs_NR_RH'
+      diff_kw: 
+        <<: *tmp_ua_diff_kwargs
+      plot_param: 
+        <<: *tmp_ua_param
+        FCST_VAR: 'RH'
+  UGRD_VGRD:
+    plot_stat:
+      - 'VECT_RMSE'
+      - 'MAG_BIAS_DIFF'
+    kwargs: 
+      <<: *tmp_ua_kwargs
+      line_type: 'vl1l2'
+      diff_kw: 
+        <<: *tmp_ua_diff_kwargs
+        var:
+          - 'VECT_RMSE'
+          - 'TOTAL'
+          - 'MAG_BIAS_DIFF'
+      plot_param: 
+        <<: *tmp_ua_param
+        FCST_VAR: 'UGRD_VGRD'
