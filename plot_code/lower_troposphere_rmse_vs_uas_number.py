@@ -60,20 +60,23 @@ out_fname = '../figs/RMSEvsUAS.pdf'
 with open(yml_fname, 'r') as fptr:
     param = yaml.safe_load(fptr)
 
-input_sims = {}
-for s in ['spring', 'winter']:
-    input_sims[s] = param[f'sim_dict_{s}']
-    for key in input_sims[s].keys():
-        input_sims[s][key]['dir'] = input_sims[s][key]['dir'].format(typ='GridStat', subtyp='lower_atm_below_sfc_mask')
-
 plot_dict = param['rmse_vs_uas']
 
 # Create figure
-fig, axes = plt.subplots(nrows=2, ncols=3, figsize=(7, 5), sharex=True, sharey='col')
-plt.subplots_adjust(left=0.1, bottom=0.1, right=0.98, top=0.95)
+fig, axes = plt.subplots(nrows=2, ncols=3, figsize=(7, 5), sharex=True, sharey=True)
+plt.subplots_adjust(left=0.1, bottom=0.1, right=0.98, top=0.94, hspace=0.22, wspace=0.1)
 letters = ['a', 'b', 'c', 'd', 'e', 'f']
+labelsize=14
 for i, s in enumerate(['winter', 'spring']):
     for j, v in enumerate(plot_dict.keys()):
+
+        input_sims = copy.deepcopy(param[f'sim_dict_{s}'])
+        for key in input_sims:
+            if v == 'RHobT':
+                input_sims[key]['dir'] = input_sims[key]['dir'].format(typ='GridStat', subtyp='RHobT')
+            else:
+                input_sims[key]['dir'] = input_sims[key]['dir'].format(typ='GridStat', subtyp='lower_atm_below_sfc_mask')
+
         for fl, c in zip(plot_dict[v]['fcst_leads'], ['k', 'b', 'r']):
             print(f'\nCreating subplot for {s} {v} f{fl:02d}h')
 
@@ -85,9 +88,9 @@ for i, s in enumerate(['winter', 'spring']):
             # Read in data
             print('Reading in data...')
             verif_df = {}
-            for key in input_sims[s].keys():
+            for key in input_sims.keys():
                 fnames = ['%s/%s_%02d0000L_%sV_%s.txt' %
-                          (input_sims[s][key]['dir'], 
+                          (input_sims[key]['dir'], 
                            plot_dict[v]['file_prefix'], 
                            fl, 
                            t.strftime('%Y%m%d_%H%M%S'), 
@@ -100,13 +103,8 @@ for i, s in enumerate(['winter', 'spring']):
             stats = {}
             for key in verif_df.keys():
                 stats[key] = mt.compute_stats_vert_avg(verif_df[key], vmin=600, vmax=1000,
-                                                       line_type=plot_dict[v]['line_type'])
-                #for t in np.unique(verif_df[key]['FCST_VALID_BEG'].values):
-                #    subset_param_copy = copy.deepcopy(subset_param)
-                #    subset_param_copy['FCST_VALID_BEG'] = t
-                #    red_df = mt.subset_verif_df(verif_df[key], subset_param_copy)
-                #    stats[key].append(mt.compute_stats_entire_df(red_df, agg=True))
-                #stats[key] = pd.concat(stats[key])
+                                                       line_type=plot_dict[v]['line_type'],
+                                                       stats_kw={'agg':True})
 
             # Make plot
             print('Making plot...')
@@ -119,52 +117,18 @@ for i, s in enumerate(['winter', 'spring']):
                                   ci=True,
                                   ci_lvl=0.95,
                                   ci_opt='bootstrap',
-                                  ci_kw={'bootstrap_kw':{'paired':True, 'n_resamples':10000}},
-                                  plot_pct_diff_kw={'lw':2, 'c':c, 'label':f'{fl}-hr fcst'},
+                                  ci_kw={'bootstrap_kw':{'paired':True, 'n_resamples':10000, 'method':'BCa'}},
+                                  plot_pct_diff_kw={'lw':1.5, 'c':c, 'label':f'{fl}-hr fcst'},
                                   plot_ci_kw={'lw':0.75, 'c':c})
             if i == 0:
                 ax.set_xlabel('')
-            ax.set_title(f"{letters[3*i+j]}) {s} {plot_dict[v]['name']}", size=14)
+            if j > 0:
+                ax.set_ylabel('')
+            ax.set_title(f"{letters[3*i+j]}) {s} {plot_dict[v]['name']}", size=labelsize)
 
 axes[0, 0].legend()
 plt.savefig(out_fname)
-'''
-# Compute percent diffs
-n_uas = [0]
-pct_diff = [0]
-ci = [(0, 0)]
-for key in n_uas_dict.keys():
-    n_uas.append(n_uas_dict[key])
-    pct_diff.append(mt.percent_diff(stats[key][plot_stat].values, stats['ctrl'][plot_stat].values))
-    ci.append(mt.confidence_interval_pct_diff(stats[key][plot_stat].values, 
-                                              stats['ctrl'][plot_stat].values, 
-                                              level=0.95, 
-                                              option='bootstrap', 
-                                              ci_kw={'bootstrap_kw':{'paired':True, 'n_resamples':10000}}))
 
-# Sort percent diffs
-n_uas = np.array(n_uas)
-pct_diff = np.array(pct_diff)
-sort_idx = np.argsort(n_uas)
-n_uas = n_uas[sort_idx]
-pct_diff = pct_diff[sort_idx]
-ci_sorted = []
-for i in sort_idx:
-    ci_sorted.append(ci[i])
-
-# Make plot
-print('Making plot...')
-fig, ax = plt.subplots(nrows=1, ncols=1, figsize=(8, 8))
-ax.plot(n_uas, pct_diff, ls='-', lw=2)
-for i, n in enumerate(n_uas):
-    ax.plot([n, n], ci[i], linestyle='-', marker='_', lw=0.5)
-
-ax.grid()
-ax.set_xlabel('number of UAS', size=14)
-ax.set_ylabel('RMSE % reduction', size=14)
-
-plt.savefig(out_fname)
-'''
 
 """
 End lower_troposphere_rmse_vs_uas_number.py
