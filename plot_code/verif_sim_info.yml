@@ -5,23 +5,23 @@ sim_dict_spring:
     dir: '/work2/noaa/wrfruc/murdzek/RRFS_OSSE/metplus_verif_grid_NR/rrfs-workflow_orion/spring/{subtyp}/output/{typ}'
     ctrl: True
   uas_300km:
-    color: 'forestgreen'
+    color: '#66CCEE'
     dir: '/work2/noaa/wrfruc/murdzek/RRFS_OSSE/metplus_verif_grid_NR/rrfs-workflow_orion/spring_uas_300km/{subtyp}/output/{typ}'
     ctrl: False
   uas_150km:
-    color: 'b'
+    color: '#AA3377'
     dir: '/work2/noaa/wrfruc/murdzek/RRFS_OSSE/metplus_verif_grid_NR/rrfs-workflow_orion/spring_uas_150km/{subtyp}/output/{typ}'
     ctrl: False
   uas_100km:
-    color: 'gray'
+    color: '#228833'
     dir: '/work2/noaa/wrfruc/murdzek/RRFS_OSSE/metplus_verif_grid_NR/rrfs-workflow_orion/spring_uas_100km/{subtyp}/output/{typ}'
     ctrl: False
   uas_75km:
-    color: 'orange'
+    color: '#CCBB44'
     dir: '/work2/noaa/wrfruc/murdzek/RRFS_OSSE/metplus_verif_grid_NR/rrfs-workflow_orion/spring_uas_75km/{subtyp}/output/{typ}'
     ctrl: False
   uas_35km:
-    color: 'r'
+    color: '#4477AA'
     dir: '/work2/noaa/wrfruc/murdzek/RRFS_OSSE/metplus_verif_grid_NR/rrfs-workflow_orion/spring_uas_35km/{subtyp}/output/{typ}'
     ctrl: False
 
@@ -31,19 +31,19 @@ sim_dict_winter:
     dir: '/work2/noaa/wrfruc/murdzek/RRFS_OSSE/metplus_verif_grid_NR/rrfs-workflow_orion/winter/{subtyp}/output/{typ}'
     ctrl: True
   uas_150km:
-    color: 'b'
+    color: '#AA3377'
     dir: '/work2/noaa/wrfruc/murdzek/RRFS_OSSE/metplus_verif_grid_NR/rrfs-workflow_orion/winter_uas_150km/{subtyp}/output/{typ}'
     ctrl: False
   uas_100km:
-    color: 'gray'
+    color: '#228833'
     dir: '/work2/noaa/wrfruc/murdzek/RRFS_OSSE/metplus_verif_grid_NR/rrfs-workflow_orion/winter_uas_100km/{subtyp}/output/{typ}'
     ctrl: False
   uas_75km:
-    color: 'orange'
+    color: '#CCBB44'
     dir: '/work2/noaa/wrfruc/murdzek/RRFS_OSSE/metplus_verif_grid_NR/rrfs-workflow_orion/winter_uas_75km/{subtyp}/output/{typ}'
     ctrl: False
   uas_35km:
-    color: 'r'
+    color: '#4477AA'
     dir: '/work2/noaa/wrfruc/murdzek/RRFS_OSSE/metplus_verif_grid_NR/rrfs-workflow_orion/winter_uas_35km/{subtyp}/output/{typ}'
     ctrl: False
 
@@ -185,8 +185,9 @@ lower_atm:
     kwargs: &tmp_ua_kwargs
       file_prefix: 'grid_stat_FV3_TMP_vs_NR_TMP'
       line_type: 'sl1l2'
-      diffs: True
-      include_ctrl: True
+      toggle_pts: False
+      mean_legend: False
+      include_ctrl: False
       ci: True
       ci_lvl: 0.95
       ci_opt: 't_dist'
@@ -205,7 +206,6 @@ lower_atm:
           - 'FCST_UNITS'
           - 'VX_MASK'
           - 'OBTYPE'
-      include_zero: True
       plot_param: &tmp_ua_param
         not_VX_MASK: 'FULL'
         OBTYPE: 'NR'
