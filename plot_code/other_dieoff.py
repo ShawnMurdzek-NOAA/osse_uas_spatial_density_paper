@@ -28,11 +28,11 @@ valid_times_spring = [dt.datetime(2022, 4, 29, 21) + dt.timedelta(hours=i) for i
 valid_times_winter = [dt.datetime(2022, 2, 1, 9) + dt.timedelta(hours=i) for i in range(159)]
 
 # Y-axis label
-ylabel = {'HPBL': 'PBL height (m)',
-          'UGRD_VGRD': '80-m wind (m s$^{-1}$)'}
+ylabel_ctrl = {'UGRD_VGRD': 'm s$^{-1}$'}
+ylabel_diff = {'UGRD_VGRD': 'diff (m s$^{-1}$)'}
 
 # Output file
-out_fname = '../figs/Other2dDieoff.pdf'
+out_fname = '../figs/Wind80m2dDieoff.pdf'
 
 
 #---------------------------------------------------------------------------------------------------
@@ -58,45 +58,89 @@ for key in param['sim_dict_winter'].keys():
 plot_dict = param['other_2d_dieoff']['additional_2D']
 
 # Make plot
-fig, axes = plt.subplots(nrows=2, ncols=2, figsize=(8, 7), sharex=True, sharey='row')
-plt.subplots_adjust(left=0.12, bottom=0.2, right=0.97, top=0.9, hspace=0.1, wspace=0.1)
-letters = ['a', 'c', 'b', 'd']
-for i, (sim_dict, ttl, valid_times) in enumerate(zip([sim_dict_winter, sim_dict_spring], 
-                                                     ['winter', 'spring'],
-                                                     [valid_times_winter, valid_times_spring])):
-    for j, v in enumerate(list(plot_dict.keys())):
-        ax = axes[j, i]
+ncols = len(plot_dict.keys())
+fig, axes = plt.subplots(nrows=3, ncols=ncols, figsize=(3, 7), sharex=True)
+plt.subplots_adjust(left=0.3, bottom=0.32, right=0.98, top=0.95, hspace=0.1, wspace=0.1)
+letters = ['a', 'b', 'c', 'd', 'e', 'f']
+for i , v in enumerate(list(plot_dict.keys())):
+    for j, (sim_dict, ttl, valid_times, c, ls) in enumerate(zip([sim_dict_winter, sim_dict_spring], 
+                                                                ['winter', 'spring'],
+                                                                [valid_times_winter, valid_times_spring],
+                                                                ['k', 'gray'],
+                                                                ['-', '-.'])):
         print(f'Making plot for {ttl} {v}')
         input_sims = copy.deepcopy(sim_dict)
         for key in input_sims:
             input_sims[key]['dir'] = input_sims[key]['dir'].format(typ='GridStat', subtyp='additional_2D')
+
+        # Control run
+        ctrl_sim = {}
+        ctrl_sim[f"{ttl} ctrl"] = input_sims['ctrl']
+        ctrl_sim[f"{ttl} ctrl"]['color'] = c
+        ctrl_sim[f"{ttl} ctrl"]['ls'] = ls
+        _ = mp.plot_sfc_dieoff(ctrl_sim, 
+                               valid_times,
+                               fcst_lead=[0, 1, 2, 3, 6, 12],
+                               plot_stat=plot_dict[v]['plot_stat'][0],
+                               ax=axes[0],
+                               verbose=False,
+                               diffs=False,
+                               **plot_dict[v]['kwargs'])
+
+        # Difference plot
         _ = mp.plot_sfc_dieoff(input_sims, 
                                valid_times,
                                fcst_lead=[0, 1, 2, 3, 6, 12],
                                plot_stat=plot_dict[v]['plot_stat'][0],
-                               ax=ax,
+                               ax=axes[j+1],
                                verbose=False,
+                               diffs=True,
+                               include_ctrl=False,
+                               include_zero=True,
                                **plot_dict[v]['kwargs'])
 
-        if (i == 1) and (j == 0):
-            ax.legend(ncols=3, fontsize=14, loc=(-1.352, -1.65))
-        else:
-            ax.get_legend().remove()
-        ax.tick_params(axis='both', which='major', labelsize=12)
-        if j == 0:
-            ax.set_title(ttl, size=16)
-            ax.set_xlabel('')
-        else:
-            ax.set_title('')
-        if i == 0:
-            ax.set_ylabel(ylabel[v], size=16)
-        else:
-            ax.set_ylabel('')
-        ax.text(0.03, 0.895, f'{letters[2*i+j]})', size=14, weight='bold', transform=ax.transAxes, 
+# Formatting
+for i, v in enumerate(list(plot_dict.keys())):
+    for j in range(3):
+        ax = axes[j]
+
+        # Subplot labels
+        ax.set_title('')
+        ax.text(0.865, 0.08, f'{letters[3*i+j]})', size=12, weight='bold', transform=ax.transAxes,
                 backgroundcolor='white')
 
-plt.suptitle('RMSEs', size=20)
+        # Legend
+        if (i == 0) and (j == 0):
+            ax.legend(ncols=1, fontsize=10, loc=(0.18, -2.89))
+        elif (i == 0) and (j == 2):
+            ax.legend(ncols=1, fontsize=10, loc=(0.06, -1.55))
+        else:
+            ax.get_legend().remove()
+
+        # X label
+        if j == 2:
+            ax.set_xlabel('lead time (hr)', size=12)
+        else:
+            ax.set_xlabel('')
+
+        # Y label
+        if j == 0:
+            ax.set_ylabel(ylabel_ctrl[v], size=12)
+        elif j == 1:
+            ax.set_ylabel(f"winter\n{ylabel_diff[v]}", size=12)
+        elif j == 2:
+            ax.set_ylabel(f"spring\n{ylabel_diff[v]}", size=12)
+
+        # Ticks
+        if j == 2:
+            ax.set_yticks(ticks=[0, -0.2, -0.4, -0.6, -0.8, -1])
+        ax.tick_params(axis='both', which='major', labelsize=10)
+        if j == 0:
+            ax.grid()
+
+axes[0].set_title('80-m Winds RMSEs', size=14)
 plt.savefig(out_fname)
+plt.close()
 
 
 """
