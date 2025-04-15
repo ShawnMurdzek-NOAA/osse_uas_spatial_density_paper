@@ -84,8 +84,6 @@ severe_wx_spring:
       kwargs: &mlcape_kwargs
         file_prefix: 'grid_stat_FV3_vs_NR'
         line_type: 'sl1l2'
-        diffs: True
-        include_ctrl: True
         ci: True
         ci_lvl: 0.95
         ci_opt: 't_dist'
@@ -102,7 +100,6 @@ severe_wx_spring:
             - 'FCST_UNITS'
             - 'VX_MASK'
             - 'OBTYPE'
-        include_zero: True
         mean_legend: False
         toggle_pts: False
         plot_param: &mlcape_param
@@ -129,22 +126,49 @@ severe_wx_spring:
 
 other_2d_dieoff:
   additional_2D:
-    HPBL:
+#    HPBL:
+#      plot_stat:
+#        - 'RMSE'
+#      kwargs: &hpbl_kwargs
+#        file_prefix: 'grid_stat_FV3_UGRD_vs_NR_UGRD'
+#        line_type: 'sl1l2'
+#        ci: True
+#        ci_lvl: 0.95
+#        ci_opt: 't_dist'
+#        ci_kw:
+#          acct_lag_corr: True
+#        diff_kw: &hpbl_diff_kwargs
+#          var:
+#            - 'RMSE'
+#          match:
+#            - 'FCST_LEAD'
+#            - 'FCST_VAR'
+#            - 'FCST_VALID_BEG'
+#            - 'FCST_LEV'
+#            - 'FCST_UNITS'
+#            - 'VX_MASK'
+#            - 'OBTYPE'
+#        mean_legend: False
+#        toggle_pts: False
+#        plot_param: &hpbl_param
+#          OBTYPE: 'NR'
+#          VX_MASK: 'shape_mask'
+#          FCST_LEV: 'Z0'
+#          FCST_VAR: 'HPBL'
+    UGRD_VGRD:
       plot_stat:
-        - 'RMSE'
-      kwargs: &hpbl_kwargs
+        - 'VECT_RMSE'
+      kwargs:
         file_prefix: 'grid_stat_FV3_UGRD_vs_NR_UGRD'
-        line_type: 'sl1l2'
-        diffs: True
-        include_ctrl: True
+        line_type: 'vl1l2'
         ci: True
         ci_lvl: 0.95
         ci_opt: 't_dist'
         ci_kw:
           acct_lag_corr: True
-        diff_kw: &hpbl_diff_kwargs
+        diff_kw:
           var:
-            - 'RMSE'
+            - 'VECT_RMSE'
           match:
             - 'FCST_LEAD'
             - 'FCST_VAR'
@@ -153,27 +177,11 @@ other_2d_dieoff:
             - 'FCST_UNITS'
             - 'VX_MASK'
             - 'OBTYPE'
-        include_zero: True
         mean_legend: False
         toggle_pts: False
-        plot_param: &hpbl_param
+        plot_param:
           OBTYPE: 'NR'
           VX_MASK: 'shape_mask'
-          FCST_LEV: 'Z0'
-          FCST_VAR: 'HPBL'
-    UGRD_VGRD:
-      plot_stat:
-        - 'VECT_RMSE'
-      kwargs:
-        <<: *hpbl_kwargs
-        file_prefix: 'grid_stat_FV3_UGRD_vs_NR_UGRD'
-        line_type: 'vl1l2'
-        diff_kw:
-          <<: *hpbl_diff_kwargs
-          var:
-            - 'VECT_RMSE'
-        plot_param:
-          <<: *hpbl_param
           FCST_LEV: 'Z80'
           FCST_VAR: 'UGRD_VGRD'
 
