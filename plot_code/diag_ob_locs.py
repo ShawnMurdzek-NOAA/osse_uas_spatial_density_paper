@@ -52,9 +52,9 @@ diag_df = gsi.compute_height_agl_diag(diag_df, rrfs_fname)
 
 # Create plot
 use_filter = [False, False, True]
-filter_min = [0, 0, 15]
+filter_min = [0, 0, 10]
 filter_max = [0, 0, 2000]
-title = ['a) all', 'b) near-surface', 'c) 15$-$2000 m AGL']
+title = ['a) all', 'b) near-surface', 'c) 10$-$2000 m AGL']
 sid_ignore = [[],
               [120, 126, 130, 133, 134, 135],
               [180, 181, 183, 187, 188]]
