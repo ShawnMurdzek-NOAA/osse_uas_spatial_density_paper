@@ -1,5 +1,5 @@
 """
-Postage Stamp Plots of Ceiling and Relative Humidity Forecasts
+Postage Stamp Plots of Ceiling and Specific Humidity Forecasts
 
 shawn.s.murdzek@noaa.gov
 """
@@ -16,6 +16,7 @@ import xarray as xr
 import cartopy.feature as cfeature
 import cartopy.crs as ccrs
 import pyart.graph.cm_colorblind as art_cm
+import pandas as pd
 
 import pyDA_utils.plot_model_data as pmd
 import pyDA_utils.upp_postprocess as uppp
@@ -43,6 +44,12 @@ sims = {'NR': [f"{NR_dir}/20220201/wrfprs_202202012200_er.grib2",
                       f"{uas35_dir}/rrfs.t22z.prslev.f002.conus_3km.grib2",
                       f"{uas35_dir}/rrfs.t22z.prslev.f004.conus_3km.grib2"]}
 
+# Files containing UAS sites
+uas_site_files = {'150-km UAS': ['/work2/noaa/wrfruc/murdzek/src/osse_ob_creator/fix_data/uas_site_locs_150km.txt'],
+                  '35-km UAS': ['/work2/noaa/wrfruc/murdzek/src/osse_ob_creator/fix_data/uas_site_locs_35km.txt1',
+                                '/work2/noaa/wrfruc/murdzek/src/osse_ob_creator/fix_data/uas_site_locs_35km.txt2',
+                                '/work2/noaa/wrfruc/murdzek/src/osse_ob_creator/fix_data/uas_site_locs_35km.txt3']}
+
 # General parameters
 figsize = (8, 8.5)
 lon = [-87, -80]
@@ -58,19 +65,21 @@ fig_param = {'ceil22':{'fname':'../figs/Ceil22Fcst.png',
                        'field':ceil_field,
                        'prs': np.nan,
                        'diff': False,
-                       'cbar_label': 'cloud ceiling (m AGL)',
+                       'cbar_label': 'cloud ceiling ({units})',
+                       'units': 'm AGL',
                        'cntf_kw':{'cmap':art_cm.HomeyerRainbow,
                                   'levels':np.arange(0, ceil_max+1, 200)}},
-             'RH22P900':{'fname':'../figs/RH22P{P_mb}Fcst.png',
-                         'field':'RH_P0_L100_GLC0',
-                         'prs': 90000,
-                         'diff': True,
-                         'cbar_label': '{P_mb}-hPa RH (%)',
-                         'cntf_kw':{'cmap':'plasma',
-                                    'levels':np.arange(0, 101, 4)},
-                         'cntf_diff_kw':{'cmap':'bwr_r',
-                                         'levels':np.arange(-30, 31, 4),
-                                         'extend':'both'}}}
+             'SPFH22P900':{'fname':'../figs/SPFH22P{P_mb}Fcst.png',
+                           'field':'SPFH_P0_L100_GLC0',
+                           'prs': 90000,
+                           'diff': True,
+                           'cbar_label': '{P_mb}-hPa SPFH ({units})',
+                           'units': 'g kg$^{-1}$',
+                           'cntf_kw':{'cmap':'plasma',
+                                      'levels':np.arange(0, 7.5, 0.5)},
+                           'cntf_diff_kw':{'cmap':'bwr_r',
+                                           'levels':np.arange(-3, 3.1, 0.4),
+                                           'extend':'both'}}}
 '''
              'RH22P950':{'fname':'../figs/RH22P{P_mb}Fcst.png',
                          'field':'RH_P0_L100_GLC0',
@@ -87,6 +96,17 @@ fig_param = {'ceil22':{'fname':'../figs/Ceil22Fcst.png',
                          'prs': 92500,
                          'diff': True,
                          'cbar_label': '{P_mb}-hPa RH (%)',
+                         'cntf_kw':{'cmap':'plasma',
+                                    'levels':np.arange(0, 101, 4)},
+                         'cntf_diff_kw':{'cmap':'bwr_r',
+                                         'levels':np.arange(-30, 31, 4),
+                                         'extend':'both'}},
+             'RH22P900':{'fname':'../figs/RH22P{P_mb}Fcst.png',
+                         'field':'RH_P0_L100_GLC0',
+                         'prs': 90000,
+                         'diff': True,
+                         'cbar_label': '{P_mb}-hPa RH ({units})',
+                         'units': '%',
                          'cntf_kw':{'cmap':'plasma',
                                     'levels':np.arange(0, 101, 4)},
                          'cntf_diff_kw':{'cmap':'bwr_r',
@@ -131,6 +151,14 @@ fig_param = {'ceil22':{'fname':'../figs/Ceil22Fcst.png',
 start = dt.datetime.now()
 print(f"start = {start.strftime('%Y%m%d %H:%M:%S')}")
 
+# Read in site locations and stitch sites together if needed
+site_dfs = {}
+for key in uas_site_files.keys():
+    tmp = []
+    for f in uas_site_files[key]:
+        tmp.append(pd.read_csv(f))
+    site_dfs[key] = pd.concat(tmp)
+
 # Read in data and compute ceilings AGL
 sims_ds = {}
 for key in sims.keys():
@@ -139,6 +167,7 @@ for key in sims.keys():
         tmp_ds = xr.open_dataset(fname, engine='pynio')
         tmp_ds = uppp.compute_ceil_agl(tmp_ds, no_ceil=np.nan)
         tmp_ds[ceil_field].values[tmp_ds[ceil_field].values > ceil_max] = np.nan  # Needed to prevent red outline around areas w/ cloud ceilings
+        tmp_ds['SPFH_P0_L100_GLC0'].values = tmp_ds['SPFH_P0_L100_GLC0'].values * 1000  # Convert from kg/kg to g/kg
         sims_ds[key].append(tmp_ds)
 
 # Determine figure configuration
@@ -157,14 +186,14 @@ for plot_name in fig_param.keys():
         if np.isnan(fig_param[plot_name]['prs']):
             zind = np.nan
             out_fname = fig_param[plot_name]['fname']
-            cbar_label = fig_param[plot_name]['cbar_label']
+            cbar_label = fig_param[plot_name]['cbar_label'].format(units=fig_param[plot_name]['units'])
         else:
             P_Pa = fig_param[plot_name]['prs']
             zind = np.where(sims_ds[s][0]['lv_ISBL0'] == P_Pa)[0][0]
             zind_NR = np.where(sims_ds['NR'][0]['lv_ISBL0'] == P_Pa)[0][0]
             P_mb = str(int(fig_param[plot_name]['prs'] / 100))
             out_fname = fig_param[plot_name]['fname'].format(P_mb=P_mb)
-            cbar_label = fig_param[plot_name]['cbar_label'].format(P_mb=P_mb)
+            cbar_label = fig_param[plot_name]['cbar_label'].format(P_mb=P_mb, units=fig_param[plot_name]['units'])
         print(f"zind = {zind}")
 
         for j, ds in enumerate(sims_ds[s]):
@@ -178,6 +207,11 @@ for plot_name in fig_param.keys():
 
                 # Add location of Atlanta, GA
                 out.plot(-84.3885, 33.7501, plt_kw={'markersize':10, 'marker':'*', 'color':'k'})
+
+                # Add UAS sites
+                if (s in site_dfs.keys()) and (j == 0):
+                    out.plot(site_dfs[s]['lon (deg E)'], site_dfs[s]['lat (deg N)'], 
+                            plt_kw={'color':'gray', 'marker':'.', 'markersize':3, 'linewidth':0})
 
                 out.contourf(fig_param[plot_name]['field'], cbar=False, 
                              ingest_kw={'zind':[zind, zind_NR], 'diff':True,

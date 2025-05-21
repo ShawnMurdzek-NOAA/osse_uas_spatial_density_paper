@@ -4,13 +4,6 @@ Plot Lower Tropospheric RMSE as a Function of UAS Number
 shawn.s.murdzek@noaa.gov
 """
 
-'''
-To Do:
-
-- Change code so I can iterate over each season, variable, and lead time
-- Clean up code
-'''
-
 #---------------------------------------------------------------------------------------------------
 # Import Modules
 #---------------------------------------------------------------------------------------------------
