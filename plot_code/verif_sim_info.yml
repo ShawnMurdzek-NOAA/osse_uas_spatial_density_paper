@@ -86,9 +86,12 @@ severe_wx_spring:
         line_type: 'sl1l2'
         ci: True
         ci_lvl: 0.95
-        ci_opt: 't_dist'
+        ci_opt: 'bootstrap'
         ci_kw:
-          acct_lag_corr: True
+          bootstrap_kw:
+            paired: True
+            n_resamples: 10000
+            method: 'BCa'
         diff_kw:
           var:
             - 'RMSE'
