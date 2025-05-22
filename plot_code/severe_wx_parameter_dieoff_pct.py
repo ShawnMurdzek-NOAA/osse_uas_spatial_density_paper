@@ -83,6 +83,7 @@ for i, (v, c, ls) in enumerate(zip(list(plot_dict.keys()),
                            verbose=False,
                            **plot_dict[v]['kwargs'])
 
+    # Percent differences
     _ = mp.plot_sfc_dieoff(input_sims, 
                            valid_times,
                            fcst_lead=[0, 1, 2, 3, 6, 12],
