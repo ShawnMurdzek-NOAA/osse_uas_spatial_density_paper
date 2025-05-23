@@ -35,6 +35,14 @@ xlabel_diff = {'TMP': 'T diff (K)',
                'RH': 'RH diff (%)',
                'UGRD_VGRD': 'winds diff (m s$^{-1}$)'}
 
+# X-axis limits
+xlim = {0: {'TMP': [-0.7, 0.02],
+            'RH': [-8.2, 0.2],
+            'UGRD_VGRD': [-2.2, 0.1]},
+        6: {'TMP': [-0.41, 0.01],
+            'RH': [-4.7, 0.1],
+            'UGRD_VGRD': [-1.1, 0.05]}}
+
 # Output file (include {stat} and {fhr} placeholders)
 out_fname = '../figs/Vprof3row{stat}{fhr}.pdf'
 
@@ -145,6 +153,8 @@ for istat, stat in enumerate(['RMSE']):
                     ax.set_ylabel('')
 
                 # Ticks
+                if i > 0:
+                    ax.set_xlim(xlim[fhr][v])
                 ax.set_ylim([1000, 580])
                 ax.set_yticks(ticks=[1000, 900, 800, 700, 600], 
                               labels=['1000', '900', '800', '700', '600'],
