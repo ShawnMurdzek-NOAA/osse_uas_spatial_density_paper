@@ -14,6 +14,7 @@ import yaml
 import copy
 import datetime as dt
 import matplotlib.pyplot as plt
+import numpy as np
 
 import metplus_OSSE_scripts.plotting.metplus_plots as mp
 
@@ -90,8 +91,7 @@ for i, (v, c, ls) in enumerate(zip(list(plot_dict.keys()),
                            plot_stat=plot_dict[v]['plot_stat'][0],
                            ax=axes[int((i+1) / 2), (i+1) % 2],
                            verbose=False,
-                           diffs=False,
-                           pct_diffs=True,
+                           diffs=True,
                            include_ctrl=False,
                            include_zero=True,
                            **plot_dict[v]['kwargs'])
@@ -127,7 +127,8 @@ for i in range(4):
 
     # Axes limits
     if i > 0:
-        ax.set_ylim([-48, 11])
+        ax.set_ylim([-52, 11])
+        ax.set_yticks(np.arange(-50, 1, 10))
 
 plt.suptitle('RMSE % diffs for gridpoints with MUCAPE > 50 J kg$^{-1}$', size=16)
 plt.savefig(out_fname)

@@ -109,8 +109,8 @@ for i, s in enumerate(['winter', 'spring']):
                                   ax=ax,
                                   ci=True,
                                   ci_lvl=0.95,
-                                  ci_opt='bootstrap',
-                                  ci_kw={'bootstrap_kw':{'paired':True, 'n_resamples':10000, 'method':'BCa'}},
+                                  ci_opt='t_dist',
+                                  ci_kw={'acct_lag_corr':True, 'mats_ste':False},
                                   plot_pct_diff_kw={'lw':1.5, 'c':c, 'label':f'{fl}-hr fcst'},
                                   plot_ci_kw={'lw':0.75, 'c':c})
             if i == 0:

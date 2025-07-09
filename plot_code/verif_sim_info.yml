@@ -86,15 +86,13 @@ severe_wx_spring:
         line_type: 'sl1l2'
         ci: True
         ci_lvl: 0.95
-        ci_opt: 'bootstrap'
+        ci_opt: 't_dist'
         ci_kw:
-          bootstrap_kw:
-            paired: True
-            n_resamples: 10000
-            method: 'BCa'
+          acct_lag_corr: True
         diff_kw:
           var:
             - 'RMSE'
+          pct: True
           match:
             - 'FCST_LEAD'
             - 'FCST_VAR'
@@ -166,15 +164,13 @@ other_2d_dieoff:
         line_type: 'vl1l2'
         ci: True
         ci_lvl: 0.95
-        ci_opt: 'bootstrap'
+        ci_opt: 't_dist'
         ci_kw:
-          bootstrap_kw:
-            paired: True
-            n_resamples: 10000
-            method: 'BCa'
+          acct_lag_corr: True
         diff_kw:
           var:
             - 'VECT_RMSE'
+          pct: True
           match:
             - 'FCST_LEAD'
             - 'FCST_VAR'

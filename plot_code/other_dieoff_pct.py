@@ -94,8 +94,7 @@ for i , v in enumerate(list(plot_dict.keys())):
                                plot_stat=plot_dict[v]['plot_stat'][0],
                                ax=axes[j+1],
                                verbose=False,
-                               diffs=False,
-                               pct_diffs=True,
+                               diffs=True,
                                include_ctrl=False,
                                include_zero=True,
                                **plot_dict[v]['kwargs'])
