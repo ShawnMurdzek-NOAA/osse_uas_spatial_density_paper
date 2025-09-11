@@ -43,6 +43,7 @@ n_uas_dict = {'spring':{'ctrl':0, 'uas_300km':84, 'uas_150km':347, 'uas_100km':7
 
 # Output file name
 out_fname = '../figs/RMSEvsUAS.pdf'
+#out_fname = '../figs/RMSEvsUAS.png'
 
 
 #---------------------------------------------------------------------------------------------------
@@ -120,7 +121,10 @@ for i, s in enumerate(['winter', 'spring']):
             ax.set_title(f"{letters[3*i+j]}) {s} {plot_dict[v]['name']}", size=labelsize)
 
 axes[0, 0].legend()
-plt.savefig(out_fname)
+if out_fname[-3:] == 'pdf':
+    plt.savefig(out_fname)
+else:
+    plt.savefig(out_fname, dpi=700)
 
 
 """

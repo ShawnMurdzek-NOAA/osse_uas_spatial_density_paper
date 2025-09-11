@@ -36,6 +36,7 @@ ylabel = {'MLCAPE': 'MLCAPE % diff',
 
 # Output file
 out_fname = '../figs/SevereWxDieoffPct.pdf'
+#out_fname = '../figs/SevereWxDieoffPct.png'
 
 
 #---------------------------------------------------------------------------------------------------
@@ -131,7 +132,10 @@ for i in range(4):
         ax.set_yticks(np.arange(-50, 1, 10))
 
 plt.suptitle('RMSE % diffs for gridpoints with MUCAPE > 50 J kg$^{-1}$', size=16)
-plt.savefig(out_fname)
+if out_fname[-3:] == 'pdf':
+    plt.savefig(out_fname)
+else:
+    plt.savefig(out_fname, dpi=700)
 
 
 """
