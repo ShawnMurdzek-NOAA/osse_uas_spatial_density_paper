@@ -12,6 +12,7 @@ import yaml
 import copy
 import datetime as dt
 import matplotlib.pyplot as plt
+import matplotlib.ticker as mticker
 
 import metplus_OSSE_scripts.plotting.metplus_plots as mp
 
@@ -29,18 +30,18 @@ valid_times_winter = [dt.datetime(2022, 2, 1, 9) + dt.timedelta(hours=i) for i i
 
 # X-axis labels
 xlabel_ctrl = {'TMP': 'temperature (K)',
-               'RH': 'relative humidity (%)',
+               'SPFH': 'specific humidity (g kg$^{-1}$)',
                'UGRD_VGRD': 'winds (m s$^{-1}$)'}
 xlabel_diff = {'TMP': 'T diff (K)',
-               'RH': 'RH diff (%)',
+               'SPFH': 'Q diff (g kg$^{-1}$)',
                'UGRD_VGRD': 'winds diff (m s$^{-1}$)'}
 
 # X-axis limits
 xlim = {0: {'TMP': [-0.7, 0.02],
-            'RH': [-8.2, 0.2],
+            'SPFH': [-7e-4, 2e-5],
             'UGRD_VGRD': [-2.2, 0.1]},
         6: {'TMP': [-0.41, 0.01],
-            'RH': [-4.7, 0.1],
+            'SPFH': [-3.8e-4, 2e-5],
             'UGRD_VGRD': [-1.1, 0.05]}}
 
 # Output file (include {stat} and {fhr} placeholders)
@@ -75,7 +76,7 @@ for istat, stat in enumerate(['RMSE']):
     for fhr in [0, 6]:
         print(f'\nMaking plot for {stat} f{fhr:02d}h')
         fig, axes = plt.subplots(nrows=3, ncols=3, figsize=(6.5, 8), sharey=True)
-        plt.subplots_adjust(left=0.14, bottom=0.14, right=0.98, top=0.95, hspace=0.44, wspace=0.1)
+        plt.subplots_adjust(left=0.14, bottom=0.14, right=0.98, top=0.95, hspace=0.46, wspace=0.1)
         letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i']
         for i, (sim_dict, ttl, valid_times, c, ls) in enumerate(zip([sim_dict_winter, sim_dict_spring],
                                                                     ['winter', 'spring'],
@@ -86,10 +87,7 @@ for istat, stat in enumerate(['RMSE']):
                 print(f'{ttl} {v}')
                 input_sims = copy.deepcopy(sim_dict)
                 for key in input_sims:
-                    if v == 'RH':
-                        input_sims[key]['dir'] = input_sims[key]['dir'].format(typ='GridStat', subtyp='RHobT')
-                    else:
-                        input_sims[key]['dir'] = input_sims[key]['dir'].format(typ='GridStat', subtyp='lower_atm_below_sfc_mask')
+                    input_sims[key]['dir'] = input_sims[key]['dir'].format(typ='GridStat', subtyp='lower_atm_below_sfc_mask')
 
                 # Control run
                 ctrl_sim = {}
@@ -130,9 +128,9 @@ for istat, stat in enumerate(['RMSE']):
 
                 # Legend
                 if (i == 0) and (j == 1):
-                    ax.legend(ncols=2, fontsize=10, loc=(-0.25, -0.42))
+                    ax.legend(ncols=2, fontsize=10, loc=(-0.25, -0.44))
                 elif (i == 2) and (j == 0):
-                    ax.legend(ncols=3, fontsize=10, loc=(0, -0.58))
+                    ax.legend(ncols=3, fontsize=10, loc=(0, -0.59))
                 else:
                     ax.get_legend().remove()
 
@@ -162,6 +160,11 @@ for istat, stat in enumerate(['RMSE']):
                 ax.tick_params(which='both', labelsize=10)
                 if i == 0:
                     ax.grid()
+
+                # Specific humidity ticks
+                if j == 1:
+                    formatter = mticker.FuncFormatter(lambda x, pos: f"{x*1e3:.2f}")
+                    ax.xaxis.set_major_formatter(formatter)
 
         plt.suptitle(f"{fhr}-hr {stat}", size=16)
         plt.savefig(out_fname.format(stat=stat, fhr=fhr))

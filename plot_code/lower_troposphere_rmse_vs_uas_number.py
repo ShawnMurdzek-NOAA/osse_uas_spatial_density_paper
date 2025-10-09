@@ -58,7 +58,7 @@ plot_dict = param['rmse_vs_uas']
 
 # Create figure
 fig, axes = plt.subplots(nrows=2, ncols=3, figsize=(7, 5), sharex=True, sharey=True)
-plt.subplots_adjust(left=0.1, bottom=0.1, right=0.98, top=0.94, hspace=0.22, wspace=0.1)
+plt.subplots_adjust(left=0.1, bottom=0.17, right=0.98, top=0.94, hspace=0.22, wspace=0.1)
 letters = ['a', 'b', 'c', 'd', 'e', 'f']
 labelsize=14
 for i, s in enumerate(['winter', 'spring']):
@@ -66,18 +66,18 @@ for i, s in enumerate(['winter', 'spring']):
 
         input_sims = copy.deepcopy(param[f'sim_dict_{s}'])
         for key in input_sims:
-            if v == 'RHobT':
-                input_sims[key]['dir'] = input_sims[key]['dir'].format(typ='GridStat', subtyp='RHobT')
-            else:
-                input_sims[key]['dir'] = input_sims[key]['dir'].format(typ='GridStat', subtyp='lower_atm_below_sfc_mask')
+            input_sims[key]['dir'] = input_sims[key]['dir'].format(typ='GridStat', subtyp='lower_atm_below_sfc_mask')
 
-        for fl, c in zip(plot_dict[v]['fcst_leads'], ['k', 'b', 'r']):
+        for fl, c in zip(plot_dict[v]['fcst_leads'], ['k', 'b', 'r', 'darkgreen']):
             print(f'\nCreating subplot for {s} {v} f{fl:02d}h')
 
             # Determine valid times
             valid_tmp = copy.deepcopy(valid_times[s])
             for itime in itime_skip[s]:
-                valid_tmp.remove(itime + dt.timedelta(hours=fl))
+                try:
+                    valid_tmp.remove(itime + dt.timedelta(hours=fl))
+                except ValueError:
+                    print(f"Cannot remove {itime}")
 
             # Read in data
             print('Reading in data...')
@@ -119,8 +119,9 @@ for i, s in enumerate(['winter', 'spring']):
             if j > 0:
                 ax.set_ylabel('')
             ax.set_title(f"{letters[3*i+j]}) {s} {plot_dict[v]['name']}", size=labelsize)
+            ax.grid(True, color='gray', linewidth=0.5)
 
-axes[0, 0].legend()
+axes[0, 0].legend(ncols=4, loc=(0.25, -1.68))
 if out_fname[-3:] == 'pdf':
     plt.savefig(out_fname)
 else:

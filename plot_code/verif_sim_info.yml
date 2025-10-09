@@ -57,15 +57,15 @@ rmse_vs_uas:
       - 0
       - 3
       - 6
+      - 12
     subset:
       FCST_VAR: 'TMP'
       not_VX_MASK: 'FULL'
-  RHobT:
+  SPFH:
     <<: *tmp_rmse_uas
-    name: 'RH'
-    file_prefix: 'grid_stat_FV3_RH_vs_NR_RH'
+    name: 'Q'
     subset:
-      FCST_VAR: 'RH'
+      FCST_VAR: 'SPFH'
       not_VX_MASK: 'FULL'
   UGRD_VGRD:
     <<: *tmp_rmse_uas
@@ -220,18 +220,17 @@ lower_atm:
         not_VX_MASK: 'FULL'
         OBTYPE: 'NR'
         FCST_VAR: 'TMP'
-  RH:
+  SPFH:
     plot_stat:
       - 'RMSE'
       - 'BIAS_DIFF'
     kwargs: 
       <<: *tmp_ua_kwargs
-      file_prefix: 'grid_stat_FV3_RH_vs_NR_RH'
       diff_kw: 
         <<: *tmp_ua_diff_kwargs
       plot_param: 
         <<: *tmp_ua_param
-        FCST_VAR: 'RH'
+        FCST_VAR: 'SPFH'
   UGRD_VGRD:
     plot_stat:
       - 'VECT_RMSE'
