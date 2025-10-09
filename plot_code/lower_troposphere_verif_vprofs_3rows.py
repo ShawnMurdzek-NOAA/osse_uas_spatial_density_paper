@@ -37,12 +37,18 @@ xlabel_diff = {'TMP': 'T diff (K)',
                'UGRD_VGRD': 'winds diff (m s$^{-1}$)'}
 
 # X-axis limits
-xlim = {0: {'TMP': [-0.7, 0.02],
-            'SPFH': [-7e-4, 2e-5],
-            'UGRD_VGRD': [-2.2, 0.1]},
-        6: {'TMP': [-0.41, 0.01],
-            'SPFH': [-3.8e-4, 2e-5],
-            'UGRD_VGRD': [-1.1, 0.05]}}
+xlim = {0: {'RMSE': {'TMP': [-0.7, 0.02],
+                     'SPFH': [-7e-4, 2e-5],
+                     'UGRD_VGRD': [-2.2, 0.1]},
+            'Bias': {'TMP': [-0.2, 0.2],
+                     'SPFH': [-1.5e-4, 1e-4],
+                     'UGRD_VGRD': [-0.18, 0.3]}},
+        6: {'RMSE':{'TMP': [-0.41, 0.01],
+                    'SPFH': [-3.8e-4, 2e-5],
+                    'UGRD_VGRD': [-1.1, 0.05]},
+            'Bias': {'TMP': [-0.15, 0.2],
+                     'SPFH': [-8e-5, 9e-5],
+                     'UGRD_VGRD': [-0.07, 0.14]}}}
 
 # Output file (include {stat} and {fhr} placeholders)
 out_fname = '../figs/Vprof3row{stat}{fhr}.pdf'
@@ -71,8 +77,8 @@ for key in param['sim_dict_winter'].keys():
 plot_dict = param['lower_atm']
 
 # Make plots
-#for istat, stat in enumerate(['RMSE', 'Bias']):
-for istat, stat in enumerate(['RMSE']):
+for istat, stat in enumerate(['RMSE', 'Bias']):
+#for istat, stat in enumerate(['RMSE']):
     for fhr in [0, 6]:
         print(f'\nMaking plot for {stat} f{fhr:02d}h')
         fig, axes = plt.subplots(nrows=3, ncols=3, figsize=(6.5, 8), sharey=True)
@@ -152,7 +158,7 @@ for istat, stat in enumerate(['RMSE']):
 
                 # Ticks
                 if i > 0:
-                    ax.set_xlim(xlim[fhr][v])
+                    ax.set_xlim(xlim[fhr][stat][v])
                 ax.set_ylim([1000, 580])
                 ax.set_yticks(ticks=[1000, 900, 800, 700, 600], 
                               labels=['1000', '900', '800', '700', '600'],

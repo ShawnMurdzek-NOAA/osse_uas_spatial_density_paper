@@ -68,7 +68,7 @@ for i, s in enumerate(['winter', 'spring']):
         for key in input_sims:
             input_sims[key]['dir'] = input_sims[key]['dir'].format(typ='GridStat', subtyp='lower_atm_below_sfc_mask')
 
-        for fl, c in zip(plot_dict[v]['fcst_leads'], ['k', 'b', 'r', 'darkgreen']):
+        for fl, c in zip(plot_dict[v]['fcst_leads'], ['#004D40', '#FFC107', '#1E88E5', '#D81B60']):
             print(f'\nCreating subplot for {s} {v} f{fl:02d}h')
 
             # Determine valid times
@@ -112,7 +112,7 @@ for i, s in enumerate(['winter', 'spring']):
                                   ci_lvl=0.95,
                                   ci_opt='t_dist',
                                   ci_kw={'acct_lag_corr':True, 'mats_ste':False},
-                                  plot_pct_diff_kw={'lw':1.5, 'c':c, 'label':f'{fl}-hr fcst'},
+                                  plot_pct_diff_kw={'lw':2, 'c':c, 'label':f'{fl}-hr fcst'},
                                   plot_ci_kw={'lw':0.75, 'c':c})
             if i == 0:
                 ax.set_xlabel('')
