@@ -47,6 +47,13 @@ sim_dict_winter:
     dir: '/work2/noaa/wrfruc/murdzek/RRFS_OSSE/metplus_verif_grid_NR/rrfs-workflow_orion/winter_uas_35km/{subtyp}/output/{typ}'
     ctrl: False
 
+sim_dict_no_aircft:
+  spring:
+    color: 'k'
+    dir: '/work2/noaa/wrfruc/murdzek/RRFS_OSSE/metplus_verif_grid_NR/rrfs-workflow_orion/spring_no_aircft/{subtyp}/output/{typ}'
+    ctrl: False
+    scale: -1
+
 rmse_vs_uas:
   TMP: &tmp_rmse_uas
     name: 'T'

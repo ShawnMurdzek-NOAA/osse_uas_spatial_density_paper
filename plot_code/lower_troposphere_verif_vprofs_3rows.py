@@ -67,6 +67,7 @@ sim_dict_spring['ctrl'] = param['sim_dict_spring']['ctrl']
 for key in param['sim_dict_spring'].keys():
     if key[:3] == 'uas':
         sim_dict_spring[f'{key} $-$ ctrl'] = param['sim_dict_spring'][key]
+#sim_dict_spring['ctrl $-$ no_aircft'] = param['sim_dict_no_aircft']['spring']
 
 sim_dict_winter = {}
 sim_dict_winter['ctrl'] = param['sim_dict_winter']['ctrl']
