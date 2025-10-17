@@ -23,14 +23,15 @@ stdev = 0.5
 ybins = np.arange(-10, 10.1, 0.2)
 
 # Number of observations per flight. Must be evenly divisible by tchunk
-nobs = 660
+nobs = 600
 tchunk = 30
 
 # Number of iterations
 niter = 10000
 
 # Autocorrelation parameters
-autocorr = [0, 0.5, 0.95, 0.975, 0.99, 0.995]
+autocorr = [0, 0.5, 0.95, 0.985, 0.995]
+colors = ['k', 'gray', '#1E88E5', '#D81B60', '#FFC107']
 
 # Output file
 out_fname = '../figs/UASerrVSautocorr.pdf'
@@ -59,18 +60,25 @@ for i in range(niter):
 
 # Plot histograms of errors from last time step
 fig, ax = plt.subplots(nrows=1, ncols=1, figsize=(4, 4))
-plt.subplots_adjust(left=0.15, bottom=0.12, right=0.99, top=0.99)
+plt.subplots_adjust(left=0.15, bottom=0.12, right=0.97, top=0.98)
 
 errs = 0.5*(ybins[1:] + ybins[:-1])
-for a, c in zip(autocorr, ['k', '#4477AA', '#CCBB44', '#228833', '#AA3377', '#66CCEE']):
+for a, c in zip(autocorr, colors):
+
+    # Print decorrelation times
+    print()
+    print(f"Autocorrelation = {a}")
+    for thres in [1/np.e, 0.01, 0.001]:
+        print(f"Decorrelation time (thres = {thres:.3f}) = {np.log(thres) / np.log(a):.3f}")
+
     hist = np.histogram(err_profiles[a][:, -1], bins=ybins)[0]
     #ax.plot(errs, hist, c=c, ls='-', label=a)  # PDF
-    ax.plot(errs, np.cumsum(hist) / np.sum(hist), c=c, ls='-', label=a)  # CDF
+    ax.plot(errs, np.cumsum(hist) / np.sum(hist), c=c, ls='-', label=f"$A$ = {a}")  # CDF
 
 # Annotations
 ax.legend()
 ax.grid(True)
-ax.set_xlabel('errors', size=12)
+ax.set_xlabel('UAS added T errors (K)', size=12)
 ax.set_ylabel('normalized cumulative frequency', size=12)
 ax.set_xlim([ybins.min(), ybins.max()])
 ax.set_ylim([0, 1])
