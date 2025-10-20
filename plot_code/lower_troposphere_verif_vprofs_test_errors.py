@@ -1,5 +1,5 @@
 """
-Vertical Profiles for Verification of the Lower Atmosphere For Added Error Autocorrelation Tests
+Vertical Profiles for Verification of the Lower Atmosphere For Added UAS Error Tests
 
 shawn.s.murdzek@noaa.gov
 """
@@ -41,7 +41,7 @@ xlim = {0: {'RMSE': {'TMP': [-0.6, 0.02],
                     'UGRD_VGRD': [-1.3, 0.05]}}}
 
 # Output file (include {stat} and {fhr} placeholders)
-out_fname = '../figs/VprofAutocorrTest.pdf'
+out_fname = '../figs/VprofUASErrTest.pdf'
 
 
 #---------------------------------------------------------------------------------------------------
@@ -53,17 +53,17 @@ with open(yml_fname, 'r') as fptr:
     param = yaml.safe_load(fptr)
 
 sim_dict = {}
-sim_dict['ctrl'] = param['sim_dict_autocorr']['ctrl']
-for key in param['sim_dict_autocorr'].keys():
+sim_dict['ctrl'] = param['sim_dict_err']['ctrl']
+for key in param['sim_dict_err'].keys():
     if key[:3] == 'uas':
-        sim_dict[f'{key} $-$ ctrl'] = param['sim_dict_autocorr'][key]
+        sim_dict[f'{key} $-$ ctrl'] = param['sim_dict_err'][key]
 
 plot_dict = param['lower_atm']
 
 # Make plots
 for istat, stat in enumerate(['RMSE']):
     fig, axes = plt.subplots(nrows=2, ncols=3, figsize=(6.5, 5), sharey=True)
-    plt.subplots_adjust(left=0.14, bottom=0.17, right=0.98, top=0.93, hspace=0.2, wspace=0.1)
+    plt.subplots_adjust(left=0.14, bottom=0.21, right=0.98, top=0.93, hspace=0.2, wspace=0.1)
     letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i']
     for i, fhr in enumerate([0, 6]):
         print(f'\nMaking plot for {stat} f{fhr:02d}h')
@@ -92,7 +92,7 @@ for istat, stat in enumerate(['RMSE']):
 
             # Legend
             if (i == 0) and (j == 0):
-                ax.legend(ncols=3, fontsize=10, loc=(-0.44, -1.65))
+                ax.legend(ncols=2, fontsize=10, loc=(0.3, -1.8))
             else:
                 ax.get_legend().remove()
 
