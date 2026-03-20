@@ -3,6 +3,8 @@ Dieoff Plots for Severe Weather Parameter Verification
 
 Show plots of percent reductions in RMSEs
 
+Used to create figure 12
+
 shawn.s.murdzek@noaa.gov
 """
 
