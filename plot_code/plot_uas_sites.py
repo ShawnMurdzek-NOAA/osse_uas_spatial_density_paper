@@ -1,6 +1,8 @@
 """
 Plot Locations of UAS Sites
 
+Used to create figure 5
+
 shawn.s.murdzek@noaa.gov
 """
 
