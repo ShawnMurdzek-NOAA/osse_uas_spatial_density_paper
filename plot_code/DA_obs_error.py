@@ -1,6 +1,8 @@
 """
 Plot Vertical Profiles of UAS Observation Error Standard Deviations Used in GSI
 
+Used to create figure 4
+
 shawn.s.murdzek@noaa.gov
 """
 
