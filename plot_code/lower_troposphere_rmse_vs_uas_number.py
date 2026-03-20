@@ -1,6 +1,8 @@
 """
 Plot Lower Tropospheric RMSE as a Function of UAS Number
 
+Used to create figure 10
+
 shawn.s.murdzek@noaa.gov
 """
 
