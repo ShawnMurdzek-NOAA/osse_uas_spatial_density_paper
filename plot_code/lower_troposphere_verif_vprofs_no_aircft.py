@@ -1,6 +1,8 @@
 """
 Vertical Profiles for Verification of the Lower Atmosphere, including a No-Aircraft Experiment
 
+Used to create figure 15
+
 shawn.s.murdzek@noaa.gov
 """
 
