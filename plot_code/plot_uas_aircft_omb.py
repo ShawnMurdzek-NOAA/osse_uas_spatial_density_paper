@@ -1,6 +1,8 @@
 """
 Plot O-B Values for Commercial Aircraft and UAS
 
+Used to create figure 17
+
 shawn.s.murdzek@noaa.gov
 """
 
