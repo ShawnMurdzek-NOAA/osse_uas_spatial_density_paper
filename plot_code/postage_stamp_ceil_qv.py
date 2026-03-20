@@ -1,6 +1,8 @@
 """
 Postage Stamp Plots of Ceiling and Specific Humidity Forecasts
 
+Used to create figures 13 and 14
+
 shawn.s.murdzek@noaa.gov
 """
 
