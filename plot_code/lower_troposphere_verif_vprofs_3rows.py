@@ -1,6 +1,8 @@
 """
 Vertical Profiles for Verification of the Lower Atmosphere
 
+Used to create figures 8, 9 and 11
+
 shawn.s.murdzek@noaa.gov
 """
 
