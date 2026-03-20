@@ -1,6 +1,8 @@
 """
 Vertical Profiles for Verification of the Lower Atmosphere For Added UAS Error Tests
 
+Used to create figure 16
+
 shawn.s.murdzek@noaa.gov
 """
 
