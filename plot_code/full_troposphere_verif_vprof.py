@@ -1,6 +1,8 @@
 """
 Vertical Profiles for Verification of the Full Troposphere
 
+Used to create figure 6
+
 shawn.s.murdzek@noaa.gov
 """
 
