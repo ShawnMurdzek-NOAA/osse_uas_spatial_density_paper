@@ -1,6 +1,8 @@
 """
 Plot Number of UAS Superobs As a Function of Pressure
 
+Used to create figure 7
+
 shawn.s.murdzek@noaa.gov
 """
 
