@@ -23,13 +23,13 @@ import pandas as pd
 # Text files with UAS site locations
 uas_site_files = {'a) 150-km spacing': 
                      {'fnames': 
-                         ['/work2/noaa/wrfruc/murdzek/src/osse_ob_creator/fix_data/uas_site_locs_150km.txt'],
+                         ['../data/UAS_sites/uas_site_locs_150km.txt'],
                       'ms':3},
                   'b) 35-km spacing': 
                       {'fnames':
-                          ['/work2/noaa/wrfruc/murdzek/src/osse_ob_creator/fix_data/uas_site_locs_35km.txt1',
-                           '/work2/noaa/wrfruc/murdzek/src/osse_ob_creator/fix_data/uas_site_locs_35km.txt2',
-                           '/work2/noaa/wrfruc/murdzek/src/osse_ob_creator/fix_data/uas_site_locs_35km.txt3'],
+                          ['../data/UAS_sites/uas_site_locs_35km.txt1',
+                           '../data/UAS_sites/uas_site_locs_35km.txt2',
+                           '../data/UAS_sites/uas_site_locs_35km.txt3'],
                        'ms':1}}
 
 # Output file name

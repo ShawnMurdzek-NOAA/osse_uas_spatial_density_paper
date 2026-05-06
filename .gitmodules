@@ -1,0 +1,6 @@
+[submodule "pyDA_utils"]
+	path = pyDA_utils
+	url = https://github.com/ShawnMurdzek-NOAA/pyDA_utils.git
+[submodule "metplus_OSSE_scripts"]
+	path = metplus_OSSE_scripts
+	url = https://github.com/ShawnMurdzek-NOAA/metplus_OSSE_scripts.git

@@ -47,10 +47,10 @@ sims = {'NR': [f"{NR_dir}/20220201/wrfprs_202202012200_er.grib2",
                       f"{uas35_dir}/rrfs.t22z.prslev.f004.conus_3km.grib2"]}
 
 # Files containing UAS sites
-uas_site_files = {'150-km UAS': ['/work2/noaa/wrfruc/murdzek/src/osse_ob_creator/fix_data/uas_site_locs_150km.txt'],
-                  '35-km UAS': ['/work2/noaa/wrfruc/murdzek/src/osse_ob_creator/fix_data/uas_site_locs_35km.txt1',
-                                '/work2/noaa/wrfruc/murdzek/src/osse_ob_creator/fix_data/uas_site_locs_35km.txt2',
-                                '/work2/noaa/wrfruc/murdzek/src/osse_ob_creator/fix_data/uas_site_locs_35km.txt3']}
+uas_site_files = {'150-km UAS': ['../data/UAS_sites/uas_site_locs_150km.txt'],
+                  '35-km UAS': ['../data/UAS_sites/uas_site_locs_35km.txt1',
+                                '../data/UAS_sites/uas_site_locs_35km.txt2',
+                                '../data/UAS_sites/uas_site_locs_35km.txt3']}
 
 # General parameters
 figsize = (8, 8.5)
