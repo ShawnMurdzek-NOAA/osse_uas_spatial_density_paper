@@ -1,11 +1,12 @@
 
+*swp
+
 # Ignore certain directories
 figs/
 data/MET_output_unzipped/
 data/MET_output_unzipped_ORIGINAL/
 data/UAS_obs/uas_obs_*/
 
-data/GRIB2_output/
 data/MET_output_zipped/
 data/tar_MET_output.sh
 data/untar_link_MET_output.sh

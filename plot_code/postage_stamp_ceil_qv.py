@@ -29,13 +29,13 @@ import pyDA_utils.upp_postprocess as uppp
 #---------------------------------------------------------------------------------------------------
 
 # Simulation directories
-NR_dir = '/work2/noaa/wrfruc/murdzek/nature_run_winter/UPP'
-ctrl_dir = '/work2/noaa/wrfruc/murdzek/RRFS_OSSE/syn_data_rrfs-workflow_orion/winter/NCO_dirs/ptmp/prod/rrfs.20220201/22'
-uas150_dir = '/work2/noaa/wrfruc/murdzek/RRFS_OSSE/syn_data_rrfs-workflow_orion/winter_uas_150km/NCO_dirs/ptmp/prod/rrfs.20220201/22'
-uas35_dir = '/work2/noaa/wrfruc/murdzek/RRFS_OSSE/syn_data_rrfs-workflow_orion/winter_uas_35km/NCO_dirs/ptmp/prod/rrfs.20220201/22'
-sims = {'NR': [f"{NR_dir}/20220201/wrfprs_202202012200_er.grib2",
-               f"{NR_dir}/20220202/wrfprs_202202020000_er.grib2",
-               f"{NR_dir}/20220202/wrfprs_202202020200_er.grib2"],
+NR_dir = '../data/GRIB2_output/NR_output'
+ctrl_dir = '../data/GRIB2_output/winter'
+uas150_dir = '../data/GRIB2_output/winter_uas_150km'
+uas35_dir = '../data/GRIB2_output/winter_uas_35km'
+sims = {'NR': [f"{NR_dir}/wrfprs_202202012200_er.grib2",
+               f"{NR_dir}/wrfprs_202202020000_er.grib2",
+               f"{NR_dir}/wrfprs_202202020200_er.grib2"],
         'no UAS': [f"{ctrl_dir}/rrfs.t22z.prslev.f000.conus_3km.grib2",
                    f"{ctrl_dir}/rrfs.t22z.prslev.f002.conus_3km.grib2",
                    f"{ctrl_dir}/rrfs.t22z.prslev.f004.conus_3km.grib2"],
@@ -167,7 +167,7 @@ for key in sims.keys():
     sims_ds[key] = []
     for fname in sims[key]:
         tmp_ds = xr.open_dataset(fname, engine='pynio')
-        tmp_ds = uppp.compute_ceil_agl(tmp_ds, no_ceil=np.nan)
+        tmp_ds = uppp.compute_ceil_agl(tmp_ds, no_ceil=np.nan, fields={'CEIL_EXP2':'CEIL_P0_L2_GLC0'})
         tmp_ds[ceil_field].values[tmp_ds[ceil_field].values > ceil_max] = np.nan  # Needed to prevent red outline around areas w/ cloud ceilings
         tmp_ds['SPFH_P0_L100_GLC0'].values = tmp_ds['SPFH_P0_L100_GLC0'].values * 1000  # Convert from kg/kg to g/kg
         sims_ds[key].append(tmp_ds)
@@ -191,8 +191,15 @@ for plot_name in fig_param.keys():
             cbar_label = fig_param[plot_name]['cbar_label'].format(units=fig_param[plot_name]['units'])
         else:
             P_Pa = fig_param[plot_name]['prs']
-            zind = np.where(sims_ds[s][0]['lv_ISBL0'] == P_Pa)[0][0]
-            zind_NR = np.where(sims_ds['NR'][0]['lv_ISBL0'] == P_Pa)[0][0]
+            if 'lv_ISBL0' in ds:
+                zind = np.where(sims_ds[s][0]['lv_ISBL0'] == P_Pa)[0][0]
+                zind_NR = np.where(sims_ds['NR'][0]['lv_ISBL0'] == P_Pa)[0][0]
+            else:
+                if ds[fig_param[plot_name]['field']].attrs['level'][0] == P_Pa:
+                    zind = np.nan
+                    zind_NR = np.nan
+                else:
+                    raise ValueError(f"level does not matc {P_Pa}")
             P_mb = str(int(fig_param[plot_name]['prs'] / 100))
             out_fname = fig_param[plot_name]['fname'].format(P_mb=P_mb)
             cbar_label = fig_param[plot_name]['cbar_label'].format(P_mb=P_mb, units=fig_param[plot_name]['units'])
