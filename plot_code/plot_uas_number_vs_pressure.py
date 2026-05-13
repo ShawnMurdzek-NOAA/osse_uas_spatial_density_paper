@@ -25,7 +25,7 @@ import pyDA_utils.bufr as bufr
 uas_density = [300, 150, 100, 75, 35]
 
 # Input data (include {n} placeholder for UAS spatial density)
-in_data = '/work/noaa/wrfruc/murdzek/nature_run_spring/obs/uas_obs_{n:d}km/superob_uas/202204292100.rap.fake.prepbufr.csv'
+in_data = '../data/UAS_obs/uas_obs_{n:d}km/superob_uas/202204292100.rap.fake.prepbufr.csv'
 
 # Pressure bins
 pbins = np.arange(480, 1050, 10)
@@ -44,10 +44,7 @@ colors = ['#66CCEE', '#AA3377', '#228833', '#CCBB44', '#4477AA']
 n_uas = {}
 for d in uas_density:
     print(f'Binning UAS obs for the {d} km network')
-    if d == 35:
-        df = bufr.bufrCSV('/work/noaa/wrfruc/murdzek/nature_run_spring/obs/uas_obs_35km/combine_obs/superob_uas/202204292100.rap.fake.prepbufr.csv').df
-    else:
-        df = bufr.bufrCSV(in_data.format(n=d)).df
+    df = bufr.bufrCSV(in_data.format(n=d)).df
     uas_p = df.loc[df['TYP'] == 136, 'POB'].values
     n_uas[d] = np.histogram(uas_p, bins=pbins)[0]
 

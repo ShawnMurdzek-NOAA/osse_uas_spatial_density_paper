@@ -3,6 +3,7 @@
 figs/
 data/MET_output_unzipped/
 data/MET_output_unzipped_ORIGINAL/
+data/UAS_obs/uas_obs_*/
 
 data/GRIB2_output/
 data/MET_output_zipped/

@@ -28,10 +28,10 @@ import pyDA_utils.map_proj as mp
 #---------------------------------------------------------------------------------------------------
 
 # BUFR file with raw UAS profile
-bufr_file_raw = '/work/noaa/wrfruc/murdzek/nature_run_spring/obs/uas_obs_300km/err_uas_csv/202204301200.rap.fake.prepbufr.csv'
+bufr_file_raw = '../data/UAS_obs/uas_obs_300km/err_uas_csv/202204301200.rap.fake.prepbufr.csv'
 
 # BUFR file with superobbed UAS profile
-bufr_file_superob = '/work/noaa/wrfruc/murdzek/nature_run_spring/obs/uas_obs_300km/superob_uas/202204301200.rap.fake.prepbufr.csv'
+bufr_file_superob = '../data/UAS_obs/uas_obs_300km/superob_uas/202204301200.rap.fake.prepbufr.csv'
 
 # Ob type for thermodynamic measurements 
 ob_typ_thermo = 136
