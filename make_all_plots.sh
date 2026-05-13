@@ -24,7 +24,6 @@ scripts=( DA_obs_error.py
           lower_troposphere_verif_vprofs_3rows.py
           lower_troposphere_verif_vprofs_no_aircft.py
           lower_troposphere_verif_vprofs_test_errors.py
-          plot_hgt_agl_for_plvl.py
           plot_raw_superob_uas_vprofs.py
           plot_uas_aircft_omb.py
           plot_uas_number_vs_pressure.py

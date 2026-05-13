@@ -2,77 +2,77 @@
 sim_dict_spring:
   ctrl:
     color: 'k'
-    dir: '/work2/noaa/wrfruc/murdzek/RRFS_OSSE/metplus_verif_grid_NR/rrfs-workflow_orion/spring/{subtyp}/output/{typ}'
+    dir: '../data/MET_output_unzipped/spring/{subtyp}/output/{typ}'
     ctrl: True
   uas_300km:
     color: '#66CCEE'
-    dir: '/work2/noaa/wrfruc/murdzek/RRFS_OSSE/metplus_verif_grid_NR/rrfs-workflow_orion/spring_uas_300km/{subtyp}/output/{typ}'
+    dir: '../data/MET_output_unzipped/spring_uas_300km/{subtyp}/output/{typ}'
     ctrl: False
   uas_150km:
     color: '#AA3377'
-    dir: '/work2/noaa/wrfruc/murdzek/RRFS_OSSE/metplus_verif_grid_NR/rrfs-workflow_orion/spring_uas_150km/{subtyp}/output/{typ}'
+    dir: '../data/MET_output_unzipped/spring_uas_150km/{subtyp}/output/{typ}'
     ctrl: False
   uas_100km:
     color: '#228833'
-    dir: '/work2/noaa/wrfruc/murdzek/RRFS_OSSE/metplus_verif_grid_NR/rrfs-workflow_orion/spring_uas_100km/{subtyp}/output/{typ}'
+    dir: '../data/MET_output_unzipped/spring_uas_100km/{subtyp}/output/{typ}'
     ctrl: False
   uas_75km:
     color: '#CCBB44'
-    dir: '/work2/noaa/wrfruc/murdzek/RRFS_OSSE/metplus_verif_grid_NR/rrfs-workflow_orion/spring_uas_75km/{subtyp}/output/{typ}'
+    dir: '../data/MET_output_unzipped/spring_uas_75km/{subtyp}/output/{typ}'
     ctrl: False
   uas_35km:
     color: '#4477AA'
-    dir: '/work2/noaa/wrfruc/murdzek/RRFS_OSSE/metplus_verif_grid_NR/rrfs-workflow_orion/spring_uas_35km/{subtyp}/output/{typ}'
+    dir: '../data/MET_output_unzipped/spring_uas_35km/{subtyp}/output/{typ}'
     ctrl: False
 
 sim_dict_winter:
   ctrl:
     color: 'k'
-    dir: '/work2/noaa/wrfruc/murdzek/RRFS_OSSE/metplus_verif_grid_NR/rrfs-workflow_orion/winter/{subtyp}/output/{typ}'
+    dir: '../data/MET_output_unzipped/winter/{subtyp}/output/{typ}'
     ctrl: True
   uas_150km:
     color: '#AA3377'
-    dir: '/work2/noaa/wrfruc/murdzek/RRFS_OSSE/metplus_verif_grid_NR/rrfs-workflow_orion/winter_uas_150km/{subtyp}/output/{typ}'
+    dir: '../data/MET_output_unzipped/winter_uas_150km/{subtyp}/output/{typ}'
     ctrl: False
   uas_100km:
     color: '#228833'
-    dir: '/work2/noaa/wrfruc/murdzek/RRFS_OSSE/metplus_verif_grid_NR/rrfs-workflow_orion/winter_uas_100km/{subtyp}/output/{typ}'
+    dir: '../data/MET_output_unzipped/winter_uas_100km/{subtyp}/output/{typ}'
     ctrl: False
   uas_75km:
     color: '#CCBB44'
-    dir: '/work2/noaa/wrfruc/murdzek/RRFS_OSSE/metplus_verif_grid_NR/rrfs-workflow_orion/winter_uas_75km/{subtyp}/output/{typ}'
+    dir: '../data/MET_output_unzipped/winter_uas_75km/{subtyp}/output/{typ}'
     ctrl: False
   uas_35km:
     color: '#4477AA'
-    dir: '/work2/noaa/wrfruc/murdzek/RRFS_OSSE/metplus_verif_grid_NR/rrfs-workflow_orion/winter_uas_35km/{subtyp}/output/{typ}'
+    dir: '../data/MET_output_unzipped/winter_uas_35km/{subtyp}/output/{typ}'
     ctrl: False
 
 sim_dict_err:
   ctrl:
     color: 'k'
-    dir: '/work2/noaa/wrfruc/murdzek/RRFS_OSSE/metplus_verif_grid_NR/rrfs-workflow_orion/spring/{subtyp}/output/{typ}'
+    dir: '../data/MET_output_unzipped/spring/{subtyp}/output/{typ}'
     ctrl: True
   uas_35km:
     color: 'k'
-    dir: '/work2/noaa/wrfruc/murdzek/RRFS_OSSE/metplus_verif_grid_NR/rrfs-workflow_orion/spring_uas_35km/{subtyp}/output/{typ}'
+    dir: '../data/MET_output_unzipped/spring_uas_35km/{subtyp}/output/{typ}'
     ctrl: False
   uas_35km_A0.95:
     color: '#1E88E5'
-    dir: '/work2/noaa/wrfruc/murdzek/RRFS_OSSE/metplus_verif_grid_NR/rrfs-workflow_orion/spring_uas_35km_autocorr0.95/{subtyp}/output/{typ}'
+    dir: '../data/MET_output_unzipped/spring_uas_35km_autocorr0.95/{subtyp}/output/{typ}'
     ctrl: False
   uas_35km_A0.985:
     color: '#D81B60'
-    dir: '/work2/noaa/wrfruc/murdzek/RRFS_OSSE/metplus_verif_grid_NR/rrfs-workflow_orion/spring_uas_35km_autocorr0.985/{subtyp}/output/{typ}'
+    dir: '../data/MET_output_unzipped/spring_uas_35km_autocorr0.985/{subtyp}/output/{typ}'
     ctrl: False
   uas_35km_DAerr:
     color: 'gray'
-    dir: '/work2/noaa/wrfruc/murdzek/RRFS_OSSE/metplus_verif_grid_NR/rrfs-workflow_orion/spring_uas_35km_add_typ133_DAerr/{subtyp}/output/{typ}'
+    dir: '../data/MET_output_unzipped/spring_uas_35km_add_typ133_DAerr/{subtyp}/output/{typ}'
     ctrl: False
 
 sim_dict_no_aircft:
   spring:
     color: 'k'
-    dir: '/work2/noaa/wrfruc/murdzek/RRFS_OSSE/metplus_verif_grid_NR/rrfs-workflow_orion/spring_no_aircft/{subtyp}/output/{typ}'
+    dir: '../data/MET_output_unzipped/spring_no_aircft/{subtyp}/output/{typ}'
     ctrl: False
     scale: -1
 
