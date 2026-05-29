@@ -191,15 +191,15 @@ for plot_name in fig_param.keys():
             cbar_label = fig_param[plot_name]['cbar_label'].format(units=fig_param[plot_name]['units'])
         else:
             P_Pa = fig_param[plot_name]['prs']
-            if 'lv_ISBL0' in ds:
+            if 'lv_ISBL0' in sims_ds[s][0]:
                 zind = np.where(sims_ds[s][0]['lv_ISBL0'] == P_Pa)[0][0]
                 zind_NR = np.where(sims_ds['NR'][0]['lv_ISBL0'] == P_Pa)[0][0]
             else:
-                if ds[fig_param[plot_name]['field']].attrs['level'][0] == P_Pa:
+                if sims_ds[s][0][fig_param[plot_name]['field']].attrs['level'][0] == P_Pa:
                     zind = np.nan
                     zind_NR = np.nan
                 else:
-                    raise ValueError(f"level does not matc {P_Pa}")
+                    raise ValueError(f"level does not match {P_Pa}")
             P_mb = str(int(fig_param[plot_name]['prs'] / 100))
             out_fname = fig_param[plot_name]['fname'].format(P_mb=P_mb)
             cbar_label = fig_param[plot_name]['cbar_label'].format(P_mb=P_mb, units=fig_param[plot_name]['units'])
