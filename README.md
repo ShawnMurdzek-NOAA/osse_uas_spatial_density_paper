@@ -27,10 +27,10 @@ git clone --recurse-submodules https://github.com/ShawnMurdzek-NOAA/osse_uas_spa
 cd osse_uas_spatial_density_paper
 ```
 
-2. Load a Python environment. An existing Python environment you have might already work. You can also create a new environment using the `environment.yml` file included here. This can be done using conda:
+2. Load a Python environment. An existing Python environment you have might already work. You can also create a new environment using the `python-environment.yml` file included here. If creating a new Python environment and using HPC, you probably want to install the new environment in your scratch or work space rather than your home space owing to the small storage quotas in home. Installing a new Python environment can be done using conda:
 
 ```
-conda env create -f python_environment.yml --prefix {ENV_PREFIX}
+conda env create -f python-environment.yml --prefix {ENV_PREFIX}   # ENV_PREFIX is where the environment will be installed
 conda activate {ENV_PREFIX}
 ```
 
